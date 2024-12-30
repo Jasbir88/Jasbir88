@@ -1,0 +1,4 @@
+# Ignore temporary files created by nano or other editors
+*~
+#*
+
