@@ -3,7 +3,7 @@
 # 🚀 Enhanced Git Automation Script
 set -e  # Exit immediately on any error
 
-<<<<<<< Updated upstream
+<Updated upstream
 Updated upstream
 
 Updated upstream
@@ -11,11 +11,11 @@ Updated upstream
 
 Stashed changes
 # Verify required scripts in the current branch
-=======
+
 echo "🔧 Starting Enhanced Git Workflow..."
 
 # Required scripts check
->>>>>>> Stashed changes
+> Stashed changes
 REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
 for script in "${REQUIRED_SCRIPTS[@]}"; do
     if [[ ! -f "$script" ]]; then
@@ -48,7 +48,7 @@ echo "🚀 Running Git Automation Script..."
 if git stash list | grep -q "Temporary stash for branch switch"; then
     echo "🔄 Applying stashed changes..."
     git stash pop
-<<<<<<< Updated upstream
+<Updated upstream
 Updated upstream
 Updated upstream
 
@@ -61,14 +61,14 @@ Stashed changes
     git commit -m "fix: reapply stashed changes after automation"
     git push origin "$(git branch --show-current)"
 Stashed changes
-=======
+
     echo "✅ Stashed changes reapplied successfully."
->>>>>>> Stashed changes
+> Stashed changes
 fi
 
 echo "🎯 All tasks completed successfully!"
 
-<<<<<<< Updated upstream
+< Updated upstream
 Updated upstream
 
 
@@ -77,5 +77,5 @@ Updated upstream
 Stashed changes
 
 Stashed changes
-=======
->>>>>>> Stashed changes
+
+> Stashed changes
