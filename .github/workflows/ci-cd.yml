@@ -33,7 +33,6 @@ jobs:
           echo "🚀 Deploying changes..."
           # Add your deployment commands here
 
-lint-and-test:
   name: 🧪 Lint and Test
   runs-on: ubuntu-latest
 
