@@ -32,3 +32,39 @@ jobs:
         run: |
           echo "🚀 Deploying changes..."
           # Add your deployment commands here
+
+lint-and-test:
+  name: 🧪 Lint and Test
+  runs-on: ubuntu-latest
+
+  steps:
+    - name: 🛠️ Checkout Code
+      uses: actions/checkout@v4
+
+    - name: 🔍 Run Shell Script Linter (shellcheck)
+      run: |
+        echo "Running shellcheck for linting..."
+        if ! command -v shellcheck &>/dev/null; then
+          sudo apt-get install -y shellcheck
+        fi
+        shellcheck *.sh || { echo "❌ Linting failed. Fix issues before merging."; exit 1; }
+
+    - name: ✅ Validate Bash Scripts Syntax
+      run: |
+        echo "Validating syntax for bash scripts..."
+        for script in *.sh; do
+          if ! bash -n "$script"; then
+            echo "❌ Syntax error detected in $script"
+            exit 1
+          fi
+        done
+        echo "✅ All scripts passed syntax validation."
+
+    - name: 🧪 Run Unit Tests
+      run: |
+        echo "Running tests..."
+        if [[ -f "./tests/test_sample.sh" ]]; then
+          bash ./tests/test_sample.sh
+        else
+          echo "⚠️ No test script found. Skipping tests."
+        fi
