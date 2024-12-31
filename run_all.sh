@@ -1,15 +1,16 @@
 #!/bin/bash
 
-echo " M-' Starting Branch Maintenance..."
+echo "🔧 Starting Branch Maintenance..."
 ./branch_maintenance.sh
 
-echo " ~K Running Branch Manager..."
-./branch_manager.sh
+echo "📋 Running Branch Manager..."
+./branch_manager.sh -l
 
-echo " ~@ Executing Git Automation Script..."
+echo "🚀 Executing Git Automation Script..."
 ./git_auto.sh "Automated commit after refinements"
 
 echo "✅ All scripts executed successfully!"
+
 
 
 
