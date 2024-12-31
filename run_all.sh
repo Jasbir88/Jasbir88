@@ -2,12 +2,12 @@
 
 echo "🔧 Starting Branch Maintenance..."
 
-<<<<<<< Updated upstream
 Updated upstream
-# Stash local changes before switching branches
 
-=======
->>>>>>> Stashed changes
+Updated upstream
+# Stash local changes before switching branch
+
+Stashed changes
 # Verify required scripts in the current branch
 REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
 
@@ -40,18 +40,18 @@ echo "🚀 Executing Git Automation Script..."
 if git stash list | grep -q "Temporary stash for branch switch"; then
     echo "🔄 Applying stashed changes..."
     git stash pop
-<<<<<<< Updated upstream
+Updated upstream
 Updated upstream
 
     git add .
     git commit -m "fix: reapply stashed changes after automation"
     git push origin "$(git branch --show-current)"
 Stashed changes
-=======
+
     git add .
     git commit -m "fix: reapply stashed changes after automation"
     git push origin "$(git branch --show-current)"
->>>>>>> Stashed changes
+Stashed changes
 fi
 
 echo "✅ All scripts executed successfully!"
@@ -59,8 +59,8 @@ echo "✅ All scripts executed successfully!"
 Updated upstream
 
 
-<<<<<<< Updated upstream
+Updated upstream
 
 Stashed changes
-=======
->>>>>>> Stashed changes
+
+Stashed changes
