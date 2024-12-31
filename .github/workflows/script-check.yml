@@ -72,7 +72,7 @@ jobs:
               "text": "✅ CI/CD Workflow succeeded! 🎉"
             }
         env:
-        https://hooks.slack.com/services/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: ${{ secrets.SLACK_WEBHOOK }}
+       https://hooks.slack.com/services/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: ${{ secrets.SLACK_WEBHOOK }}
 
       - name: Slack Notification on Failure
         if: failure()
@@ -83,4 +83,4 @@ jobs:
               "text": "❌ CI/CD Workflow failed! 🚨"
             }
         env:
-         https://hooks.slack.com/services/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: ${{ secrets.SLACK_WEBHOOK }}
+         https://hooks.slack.com/services/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: ${{ secrets.SLACK_WEBHOOK }}
