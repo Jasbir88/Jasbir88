@@ -1,0 +1,38 @@
+name: Validate Essential Scripts in Branches
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  script-validation:
+    name: Script Validation Job
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Essential Scripts
+        run: |
+          echo "🔍 Validating presence of essential scripts..."
+          REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
+          for script in "${REQUIRED_SCRIPTS[@]}"; do
+            if [[ ! -f "$script" ]]; then
+              echo "❌ Error: Missing $script"
+              exit 1
+            fi
+          done
+          echo "✅ All essential scripts are present."
+
+      - name: Success Message
+        if: success()
+        run: echo "🎉 Validation completed successfully. All scripts are in place."
+
+      - name: Failure Message
+        if: failure()
+        run: echo "🛑 Validation failed. Some essential scripts are missing. Check the logs for details."
