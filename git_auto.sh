@@ -1,19 +1,10 @@
 #!/bin/bash
 
-# 🚀 Automated Git Workflow Script
-
-set -e  # Exit on errors
-
-# Help Menu
-if [[ "$1" == "--help" ]]; then
-    echo "Usage: ./git_auto.sh [branch_name] [commit_message]"
-    echo "Example: ./git_auto.sh feature/login 'Add login functionality'"
-    exit 0
-fi
+# Automated Git Workflow Script
 
 # Set Variables
-BRANCH=${1:-$(git branch --show-current)}
-COMMIT_MSG=${2:-"Automated commit"}
+BRANCH=$(git branch --show-current)
+COMMIT_MSG=${1:-"Automated commit"}
 
 # Fetch Latest Changes
 echo "🔄 Fetching latest changes from origin..."
@@ -25,7 +16,7 @@ git pull origin "$BRANCH"
 
 # Add Changes
 echo "➕ Adding changes..."
-git add -u
+git add .
 
 # Commit Changes
 echo "✅ Committing changes with message: '$COMMIT_MSG'"
