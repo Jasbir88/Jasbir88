@@ -1,59 +1,35 @@
 #!/bin/bash
 
-# 🚀 Unified Git Workflow Script
-# Automates branch maintenance, branch management, and git operations
+echo "🔧 Starting Branch Maintenance..."
 
-set -e  # Exit immediately if a command exits with a non-zero status
-
-# 🛠️ Helper Functions
-log() {
-    echo -e "\e[34m[INFO] $1\e[0m"
-}
-
-warn() {
-    echo -e "\e[33m[WARN] $1\e[0m"
-}
-
-error() {
-    echo -e "\e[31m[ERROR] $1\e[0m"
+# Verify the script exists in the branch
+if [[ ! -f "./run_all.sh" ]]; then
+    echo "🛑 Error: run_all.sh is missing in this branch. Exiting..."
     exit 1
-}
+fi
 
-# 📝 Stash Local Changes Before Starting
+# Stash local changes
 if [[ $(git status --porcelain) ]]; then
-    log "Local changes detected. Stashing temporarily..."
+    echo "🛑 Local changes detected. Stashing temporarily..."
     git stash push -m "Temporary stash for branch switch"
     STASH_APPLIED=true
 else
     STASH_APPLIED=false
 fi
 
-# 🔄 Update All Branches
-log "Starting Branch Maintenance..."
-./branch_maintenance.sh || error "Branch Maintenance failed"
+./branch_maintenance.sh
+./branch_manager.sh -l
+./git_auto.sh "Automated commit after refinements"
 
-# 📋 List and Validate Branches
-log "Running Branch Manager..."
-./branch_manager.sh -l || error "Branch Manager failed"
-
-# 🚀 Automate Git Workflow
-log "Executing Git Automation Script..."
-./git_auto.sh "Automated commit after refinements" || error "Git Automation failed"
-
-# 🔄 Apply Stashed Changes (if any)
+# Apply stashed changes
 if [[ "$STASH_APPLIED" == "true" ]]; then
-    log "Applying stashed changes..."
-    git stash pop || warn "Failed to apply stashed changes. Manual intervention needed."
-    
-    # Check if there are changes after stash pop
-    if [[ $(git status --porcelain) ]]; then
-        log "Committing stashed changes..."
-        git add .
-        git commit -m "fix: reapply stashed changes after automation"
-        git push origin $(git branch --show-current)
-    fi
+    echo "🔄 Applying stashed changes..."
+    git stash pop
+    git add run_all.sh
+    git commit -m "fix: reapply stashed changes after automation"
+    git push origin $(git branch --show-current)
 fi
 
-# ✅ Final Confirmation
-log "All scripts executed successfully. Branches are up-to-date!"
+echo "✅ All scripts executed successfully!"
+
 
