@@ -9,19 +9,25 @@
 
 ---
 
-Welcome to my GitHub repository! This repository contains my personal projects, experiments, and learning materials.
+# 🚀 Git Automation Project
 
-## 📚 About This Repository
+## Overview
+This project automates Git workflows using bash scripts and GitHub Actions.
 
-- **Purpose:** Personal projects, scripts, and testing grounds.  
-- **Technologies Used:** Git, Bash, and other relevant tools.  
-- **Focus Areas:** Cybersecurity, scripting, and automation.  
+## 📜 Key Features
+- **Branch Maintenance:** Automates cleanup and updates across branches.
+- **CI/CD Pipeline:** Validates scripts, ensures workflows succeed.
+- **Slack Notifications:** Alerts on workflow success or failure.
+- **Monitoring Dashboard:** Integration with Prometheus and Grafana for status tracking.
 
-## 🛠️ How to Use This Repository
+## 🛠️ Setup
 
-1. Clone the repository:  
-   ```bash
-   git clone https://github.com/Jasbir88/Jasbir88.git
+### **1. Local Development**
+```bash
+git clone https://github.com/your-repo.git
+cd your-repo
+./run_all.sh
+
 
 
 
