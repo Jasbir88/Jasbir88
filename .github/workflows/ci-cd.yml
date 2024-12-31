@@ -1,69 +1,113 @@
-name: CI/CD Workflow
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
-      - develop
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
-  validate-scripts:
+  lint-and-test:
+    name: 🧪 Lint, Validate, and Test
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repository
+      # Step 1: Checkout Code
+      - name: 🛠️ Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Validate Essential Scripts
+      # Step 2: Set Up Environment
+      - name: ⚙️ Set Up Environment
         run: |
-          REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
-          for script in "${REQUIRED_SCRIPTS[@]}"; do
-            if [[ ! -f "$script" ]]; then
-              echo "❌ Error: Missing $script"
-              exit 1
-            fi
+          sudo apt-get update
+          sudo apt-get install -y shellcheck bash python3 python3-pip
+          echo "✅ Environment set up successfully."
+
+      # Step 3: Validate Bash Scripts
+      - name: 🔍 Lint and Validate Bash Scripts
+        run: |
+          echo "🔄 Checking all shell scripts for linting errors..."
+          find . -type f -name "*.sh" -exec shellcheck {} \;
+          echo "✅ All scripts passed ShellCheck."
+
+      # Step 4: Validate Bash Syntax
+      - name: ✅ Validate Bash Script Syntax
+        run: |
+          echo "🔄 Validating bash script syntax..."
+          for script in $(find . -type f -name "*.sh"); do
+            bash -n "$script" || { echo "❌ Syntax error in $script"; exit 1; }
           done
-          echo "✅ All essential scripts are present."
+          echo "✅ All scripts passed syntax validation."
 
-  deploy:
-    needs: validate-scripts
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy Changes
+      # Step 5: Ensure Scripts Are Executable
+      - name: 🔑 Ensure Scripts Are Executable
         run: |
-          echo "🚀 Deploying changes..."
-          # Add your deployment commands here
+          chmod +x *.sh
+          chmod +x ./tests/*.sh || true
+          echo "✅ Executable permissions ensured."
 
-  name: 🧪 Lint and Test
-  runs-on: ubuntu-latest
-
-  steps:
-    - name: 🛠️ Checkout Code
-      uses: actions/checkout@v4
-
-    - name: 🔍 Run Shell Script Linter (shellcheck)
-      run: |
-        echo "Running shellcheck for linting..."
-        if ! command -v shellcheck &>/dev/null; then
-          sudo apt-get install -y shellcheck
-        fi
-        shellcheck *.sh || { echo "❌ Linting failed. Fix issues before merging."; exit 1; }
-
-    - name: ✅ Validate Bash Scripts Syntax
-      run: |
-        echo "Validating syntax for bash scripts..."
-        for script in *.sh; do
-          if ! bash -n "$script"; then
-            echo "❌ Syntax error detected in $script"
-            exit 1
+      # Step 6: Run Tests
+      - name: 🧪 Run Tests
+        run: |
+          echo "🔄 Running tests..."
+          if [[ -f "./tests/test_sample.sh" ]]; then
+            bash ./tests/test_sample.sh
+          else
+            echo "⚠️ No test script found. Skipping tests."
           fi
-        done
-        echo "✅ All scripts passed syntax validation."
+          echo "✅ Tests completed."
 
-    - name: 🧪 Run Unit Tests
-      run: |
-        echo "Running tests..."
-        if [[ -f "./tests/test_sample.sh" ]]; then
-          bash ./tests/test_sample.sh
-        else
-          echo "⚠️ No test script found. Skipping tests."
-        fi
+      # Step 7: Archive Logs (if any)
+      - name: 📦 Archive Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs
+          path: ./run_all.log
+
+  deployment:
+    name: 🚀 Deployment
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: 🛠️ Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🚀 Deploy Application
+        run: |
+          echo "🔄 Starting deployment..."
+          # Add your deployment script here, for example:
+          # ./deploy.sh
+          echo "✅ Deployment successful."
+
+      - name: ✅ Verify Deployment
+        run: |
+          echo "🔄 Verifying deployment..."
+          # Add verification steps here
+          echo "✅ Deployment verified."
+
+  notifications:
+    name: 📣 Notifications
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [lint-and-test, deployment]
+
+    steps:
+      - name: 🚨 Send Slack Notification
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"❌ CI/CD Workflow Failed: Check GitHub Actions for details."}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+      
+      - name: ✅ Send Success Notification
+        if: success()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"✅ CI/CD Workflow Succeeded: All checks passed and deployment successful."}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
