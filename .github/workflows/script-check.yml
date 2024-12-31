@@ -37,3 +37,50 @@ jobs:
         if: failure()
         run: echo "🛑 Validation failed. Some essential scripts are missing. Check the logs for details."
 
+name: CI Workflow with Slack Notifications
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  validate-scripts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Essential Scripts
+        run: |
+          REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
+          for script in "${REQUIRED_SCRIPTS[@]}"; do
+            if [[ ! -f "$script" ]]; then
+              echo "❌ Error: Missing $script"
+              exit 1
+            fi
+          done
+          echo "✅ All essential scripts are present."
+
+      - name: Slack Notification on Success
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "✅ CI/CD Workflow succeeded! 🎉"
+            }
+        env:
+         https://hooks.slack.com/services/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: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Slack Notification on Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "❌ CI/CD Workflow failed! 🚨"
+            }
+        env:
+          https://hooks.slack.com/services/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: ${{ secrets.SLACK_WEBHOOK }}
