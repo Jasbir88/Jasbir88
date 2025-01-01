@@ -19,14 +19,20 @@ jobs:
 
       - name: Validate Essential Scripts
         run: |
+          echo "Validating presence of essential scripts..."
           REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
+          MISSING_SCRIPTS=()
           for script in "${REQUIRED_SCRIPTS[@]}"; do
             if [[ ! -f "$script" ]]; then
-              echo "Error: Missing $script"
-              exit 1
+              MISSING_SCRIPTS+=("$script")
             fi
           done
-          echo "All essential scripts are present."
+          if [ ${#MISSING_SCRIPTS[@]} -ne 0 ]; then
+            echo "Missing scripts: ${MISSING_SCRIPTS[@]}"
+            exit 1
+          else
+            echo "All essential scripts are present."
+          fi
 
       - name: Success Message
         if: success()
