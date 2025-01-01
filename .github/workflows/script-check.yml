@@ -51,7 +51,7 @@ jobs:
               "text": "✅ CI/CD Workflow succeeded! 🎉"
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Slack Notification on Failure
         if: failure()
@@ -62,4 +62,4 @@ jobs:
               "text": "❌ CI/CD Workflow failed! 🚨"
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
