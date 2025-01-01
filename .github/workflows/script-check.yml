@@ -19,49 +19,22 @@ jobs:
 
       - name: Validate Essential Scripts
         run: |
-          echo "🔍 Validating presence of essential scripts..."
           REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
           for script in "${REQUIRED_SCRIPTS[@]}"; do
             if [[ ! -f "$script" ]]; then
-              echo "❌ Error: Missing $script"
+              echo "Error: Missing $script"
               exit 1
             fi
           done
-          echo "✅ All essential scripts are present."
+          echo "All essential scripts are present."
 
       - name: Success Message
         if: success()
-        run: echo "🎉 Validation completed successfully. All scripts are in place."
+        run: echo "Validation completed successfully. All scripts are in place."
 
       - name: Failure Message
         if: failure()
-        run: echo "🛑 Validation failed. Some essential scripts are missing. Check the logs for details."
-
-name: CI Workflow with Slack Notifications
-
-on:
-  push:
-    branches:
-      - '*'
-
-jobs:
-  validate-scripts:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Validate Essential Scripts
-        run: |
-          REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
-          for script in "${REQUIRED_SCRIPTS[@]}"; do
-            if [[ ! -f "$script" ]]; then
-              echo "❌ Error: Missing $script"
-              exit 1
-            fi
-          done
-          echo "✅ All essential scripts are present."
+        run: echo "Validation failed. Some essential scripts are missing. Check the logs for details."
 
       - name: Slack Notification on Success
         if: success()
@@ -72,7 +45,7 @@ jobs:
               "text": "✅ CI/CD Workflow succeeded! 🎉"
             }
         env:
-       https://hooks.slack.com/services/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: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
       - name: Slack Notification on Failure
         if: failure()
@@ -83,4 +56,4 @@ jobs:
               "text": "❌ CI/CD Workflow failed! 🚨"
             }
         env:
-         https://hooks.slack.com/services/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: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
