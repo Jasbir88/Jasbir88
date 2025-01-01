@@ -47,6 +47,33 @@ This project automates Git workflows and CI/CD pipelines for consistent and effi
    cd Jasbir88
 
 
+---
+
+## 📄 **2. Jasbir88/README.md (Developer-Specific Guide)**
+
+### 🚀 **Template Example**
+
+```markdown
+# 🚀 **Developer Guide for Git Automation Project**
+
+## 👤 **About Jasbir Singh**
+
+- **Role:** Developer & Automation Specialist
+- **Experience:** Proficient in Git workflows, CI/CD pipelines, and automation scripting.
+
+---
+
+## 🛠️ **Project Workflow**
+
+1. **Branch Management:**  
+   Use `./branch_manager.sh` to switch, create, or delete branches.
+
+2. **Run Scripts:**  
+   Execute the primary script:
+
+   ```bash
+   ./run_all.sh
+
 
 
 
