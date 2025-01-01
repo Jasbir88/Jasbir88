@@ -1,20 +1,18 @@
 # src/authentication.py
 
-import hashlib
-import hmac
+import bcrypt
 
 # Example user data, in a real application this would come from a database
 USER_DATA = {
-    "admin": "5f4dcc3b5aa765d61d8327deb882cf99"  # This is the MD5 hash for "password"
+    "admin": bcrypt.hashpw("password".encode(), bcrypt.gensalt()).decode()  # Hash for "password"
 }
 
 def hash_password(password):
-    return hashlib.md5(password.encode()).hexdigest()
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 def authenticate_user(username, password):
-    hashed_password = hash_password(password)
     stored_password = USER_DATA.get(username)
-    if stored_password and hmac.compare_digest(stored_password, hashed_password):
+    if stored_password and bcrypt.checkpw(password.encode(), stored_password.encode()):
         return "Authenticated"
     return "Authentication Failed"
 
