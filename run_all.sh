@@ -1,81 +1,40 @@
 #!/bin/bash
 
-# 🚀 Enhanced Git Automation Script
+# Enhanced Git Automation Script
 set -e  # Exit immediately on any error
 
-<Updated upstream
-Updated upstream
-
-Updated upstream
 # Stash local changes before switching branch
+echo "Stashing local changes..."
+git stash push -m "Stashed changes before running scripts"
 
-Stashed changes
 # Verify required scripts in the current branch
-
-echo "🔧 Starting Enhanced Git Workflow..."
+echo "Starting Enhanced Git Workflow..."
 
 # Required scripts check
-> Stashed changes
 REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
 for script in "${REQUIRED_SCRIPTS[@]}"; do
     if [[ ! -f "$script" ]]; then
-        echo "❌ Error: Missing $script"
+        echo "Error: Missing $script"
         exit 1
     fi
 done
 
-echo "✅ All required scripts are present."
+echo "All required scripts are present."
 
-# Stash local changes before switching branches
-if [[ -n $(git status --porcelain) ]]; then
-    echo "📦 Stashing local changes..."
-    git stash push -m "Temporary stash for branch switch"
-fi
-
-# Run Branch Maintenance
-echo "🔄 Running Branch Maintenance..."
+# Execute the required scripts
+echo "Executing branch maintenance script..."
 ./branch_maintenance.sh
 
-# Run Branch Manager
-echo "📋 Running Branch Manager..."
+echo "Executing branch manager script..."
 ./branch_manager.sh
 
-# Run Git Automation Script
-echo "🚀 Running Git Automation Script..."
-./git_auto.sh "Automated commit after refinements"
+echo "Executing git automation script..."
+./git_auto.sh
 
-# Apply stashed changes if they exist
-if git stash list | grep -q "Temporary stash for branch switch"; then
-    echo "🔄 Applying stashed changes..."
-    git stash pop
-<Updated upstream
-Updated upstream
-Updated upstream
+echo "All scripts executed successfully."
 
-    git add .
-    git commit -m "fix: reapply stashed changes after automation"
-    git push origin "$(git branch --show-current)"
-Stashed changes
+# Apply stashed changes
+echo "Applying stashed changes..."
+git stash pop
 
-    git add .
-    git commit -m "fix: reapply stashed changes after automation"
-    git push origin "$(git branch --show-current)"
-Stashed changes
-
-    echo "✅ Stashed changes reapplied successfully."
-> Stashed changes
-fi
-
-echo "🎯 All tasks completed successfully!"
-
-< Updated upstream
-Updated upstream
-
-
-Updated upstream
-
-Stashed changes
-
-Stashed changes
-
-> Stashed changes
+echo "Enhanced Git Workflow completed successfully."
