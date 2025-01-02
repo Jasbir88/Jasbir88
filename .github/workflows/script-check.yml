@@ -54,22 +54,18 @@ jobs:
 
       - name: Slack Notification on Success
         if: success()
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: 8398a7/action-slack@v3
         with:
-          payload: |
-            {
-              "text": "✅ CI/CD Workflow succeeded! 🎉"
-            }
+          status: success
+          fields: status, text
+          text: "✅ CI/CD Workflow succeeded! 🎉"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Slack Notification on Failure
         if: failure()
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: 8398a7/action-slack@v3
         with:
-          payload: |
-            {
-              "text": "❌ CI/CD Workflow failed! 🚨"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          status: failure
+          fields: status, text
+          text: "❌ CI/CD Workflow failed! 🚨"
