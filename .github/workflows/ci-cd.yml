@@ -100,14 +100,22 @@ jobs:
     steps:
       - name: Send Slack Notification on Failure
         if: failure()
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"CI/CD Workflow Failed: Check GitHub Actions for details."}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "❌ CI/CD Workflow Failed: Check GitHub Actions for details. 🚨"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       
       - name: Send Success Notification
         if: success()
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"CI/CD Workflow Succeeded: All checks passed and deployment successful."}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "✅ CI/CD Workflow Succeeded: All checks passed and deployment successful. 🎉"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
