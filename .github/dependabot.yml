@@ -5,19 +5,29 @@
 
 version: 2
 updates:
-  - package-ecosystem: "" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: "weekly"
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "example-package"
+        versions: ["1.x"]
+
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "example-package"
+        versions: ["1.x"]
+
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "example-image"
+        versions: ["1.x"]
