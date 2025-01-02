@@ -32,7 +32,7 @@ echo "Executing branch maintenance script..."
 ./branch_maintenance.sh
 
 echo "Executing branch manager script..."
-./branch_manager.sh --option1 --option2  # Replace with actual options
+./branch_manager.sh --switch
 
 echo "Executing git automation script..."
 ./git_auto.sh
