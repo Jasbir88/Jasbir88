@@ -12,7 +12,7 @@ updates:
     open-pull-requests-limit: 10
     ignore:
       - dependency-name: "example-package"
-        versions: ["1.x"]
+        versions: ["<2.0.0"]
 
   - package-ecosystem: "npm"
     directory: "/"
@@ -21,7 +21,7 @@ updates:
     open-pull-requests-limit: 10
     ignore:
       - dependency-name: "example-package"
-        versions: ["1.x"]
+        versions: ["<2.0.0"]
 
   - package-ecosystem: "docker"
     directory: "/"
@@ -30,4 +30,4 @@ updates:
     open-pull-requests-limit: 10
     ignore:
       - dependency-name: "example-image"
-        versions: ["1.x"]
+        versions: ["<2.0.0"]
