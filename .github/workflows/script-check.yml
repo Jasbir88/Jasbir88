@@ -17,6 +17,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Set Execute Permissions
+        run: chmod +x ./run_all.sh
+
       - name: Validate Essential Scripts
         run: |
           echo "Validating presence of essential scripts..."
@@ -33,6 +36,9 @@ jobs:
           else
             echo "All essential scripts are present."
           fi
+
+      - name: Run All Scripts
+        run: ./run_all.sh
 
       - name: Success Message
         if: success()
