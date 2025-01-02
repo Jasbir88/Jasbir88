@@ -69,3 +69,5 @@ jobs:
           status: failure
           fields: status, text
           text: "❌ CI/CD Workflow failed! 🚨"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
