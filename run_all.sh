@@ -21,6 +21,12 @@ done
 
 echo "All required scripts are present."
 
+# Set execute permissions for required scripts
+echo "Setting execute permissions for required scripts..."
+for script in "${REQUIRED_SCRIPTS[@]}"; do
+    chmod +x "$script"
+done
+
 # Execute the required scripts
 echo "Executing branch maintenance script..."
 ./branch_maintenance.sh
