@@ -42,13 +42,14 @@ verify_script_integrity() {
 # Function to execute scripts
 execute_scripts() {
     echo "Executing branch maintenance script..."
-    ./branch_maintenance.sh
+    ./branch_maintenance.sh || { echo "Error executing branch_maintenance.sh"; exit 1; }
 
     echo "Executing branch manager script..."
-    ./branch_manager.sh --switch  # Replace with actual options
+    # The --switch flag is used to switch to the appropriate branch
+    ./branch_manager.sh main || { echo "Error executing branch_manager.sh"; exit 1; }
 
     echo "Executing git automation script..."
-    ./git_auto.sh
+    ./git_auto.sh || { echo "Error executing git_auto.sh"; exit 1; }
 
     echo "All scripts executed successfully."
 }
@@ -60,6 +61,9 @@ apply_stashed_changes() {
         echo "Merge conflict detected. Please resolve the conflict manually."
         exit 1
     }
+    git add .
+    git commit -m "fix: reapplied stashed changes after automation"
+    git push origin "$(git branch --show-current)"
     echo "Enhanced Git Workflow completed successfully."
 }
 
