@@ -34,7 +34,7 @@ jobs:
               MISSING_SCRIPTS+=("$script")
             fi
           done
-          if [ ${#MISSING_SCRIPTS[@]} -ne 0 ]; then
+          if [ ${#MISSING_SCRIPTS[@]} -ne 0]; then
             echo "Missing scripts: ${MISSING_SCRIPTS[@]}"
             exit 1
           else
@@ -69,5 +69,18 @@ jobs:
           status: failure
           fields: status, text
           text: "❌ CI/CD Workflow failed! 🚨"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  script-check:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Send Slack Notification
+        uses: slackapi/slack-github-action@v1
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
