@@ -7,6 +7,7 @@ on:
 jobs:
   run_automation:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -21,12 +22,29 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Run Automation Script
-        run: ./run_all.sh
+      - name: Run Automated Script
+        run: |
+          echo "Running automated script..."
+          python your_script.py  # Replace with the actual script you want to run
 
-      - name: Archive Logs
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Notify Success
+        if: success()
+        uses: slackapi/slack-github-action@v1
         with:
-          name: logs
-          path: logs/
+          payload: |
+            {
+              "text": "✅ Scheduled Automation succeeded! 🎉"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notify Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "❌ Scheduled Automation failed! 🚨"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
