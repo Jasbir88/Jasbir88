@@ -1,5 +1,10 @@
 name: Scheduled Workflow
 
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+  
 on:
   schedule:
     - cron: '0 0 * * *'  # Adjust the cron schedule as needed
@@ -14,6 +19,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Send Slack Notification
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@v1.23.0  # Use a valid version tag
         with:
           payload: '{"text":"Scheduled workflow executed"}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

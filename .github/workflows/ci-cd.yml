@@ -1,5 +1,10 @@
 name: CI/CD Pipeline
 
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+
 on:
   push:
     branches:
@@ -17,7 +22,7 @@ jobs:
     steps:
       # Step 1: Checkout Code
       - name: 🛠️ Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       # Step 2: Set Up Environment
       - name: ⚙️ Set Up Environment
@@ -67,6 +72,28 @@ jobs:
         with:
           name: logs
           path: ./run_all.log
+
+      - name: Send Slack Notification on Success
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0  # Use a valid version tag
+        with:
+          payload: |
+            {
+              "text": "✅ CI/CD Workflow Succeeded: All checks passed and deployment successful. 🎉"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send Slack Notification on Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0  # Use a valid version tag
+        with:
+          payload: |
+            {
+              "text": "❌ CI/CD Workflow Failed: Check GitHub Actions for details. 🚨"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deployment:
     name: 🚀 Deployment
@@ -122,11 +149,34 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Send Slack Notification
-        uses: slackapi/slack-github-action@v1
+      - name: Build and Test
+        run: |
+          echo "Running build and tests..."
+          # Add your build and test commands here
+
+      - name: Send Slack Notification on Success
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "✅ CI/CD Workflow Succeeded: All checks passed and deployment successful. 🎉"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send Slack Notification on Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "❌ CI/CD Workflow Failed: Check GitHub Actions for details. 🚨"
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

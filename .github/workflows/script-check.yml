@@ -34,7 +34,7 @@ jobs:
               MISSING_SCRIPTS+=("$script")
             fi
           done
-          if [ ${#MISSING_SCRIPTS[@]} -ne 0]; then
+          if [ ${#MISSING_SCRIPTS[@]} -ne 0 ]; then
             echo "Missing scripts: ${MISSING_SCRIPTS[@]}"
             exit 1
           else
@@ -80,7 +80,44 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Send Slack Notification
-        uses: slackapi/slack-github-action@v1
+      - name: Validate Essential Scripts
+        run: |
+          echo "Validating presence of essential scripts..."
+          REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
+          MISSING_SCRIPTS=()
+          for script in "${REQUIRED_SCRIPTS[@]}"; do
+            if [[ ! -f "$script" ]]; then
+              MISSING_SCRIPTS+=("$script")
+            fi
+          done
+          if [ ${#MISSING_SCRIPTS[@]} -ne 0 ]; then
+            echo "Missing scripts: ${MISSING_SCRIPTS[@]}"
+            exit 1
+          else
+            echo "All essential scripts are present."
+          fi
+
+      - name: Run All Scripts
+        run: ./run_all.sh
+
+      - name: Send Slack Notification on Success
+        if: success()
+        uses: slackapi/slack-github-action@v1.23.0  # Use a valid version
+        with:
+          payload: |
+            {
+              "text": "✅ CI/CD Workflow succeeded! 🎉"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send Slack Notification on Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "text": "❌ CI/CD Workflow failed! 🚨"
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
