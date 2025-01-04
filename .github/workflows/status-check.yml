@@ -1,4 +1,4 @@
-name: Validate Essential Scripts in Branches
+name: Status Check
 
 permissions:
   contents: read
@@ -13,16 +13,13 @@ on:
       - '*'
 
 jobs:
-  script-validation:
-    name: Script Validation Job
+  status-check:
     runs-on: ubuntu-latest
-
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set Execute Permissions
-        run: chmod +x ./run_all.sh
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Validate Essential Scripts
         run: |
@@ -41,6 +38,9 @@ jobs:
             echo "All essential scripts are present."
           fi
 
+      - name: Set Execute Permissions
+        run: chmod +x ./run_all.sh
+
       - name: Run All Scripts
         run: ./run_all.sh
 
@@ -54,7 +54,7 @@ jobs:
 
       - name: Slack Notification on Success
         if: success()
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@v1.23.0  # Replace with actual version tag
         with:
           payload: |
             {
@@ -65,7 +65,7 @@ jobs:
 
       - name: Slack Notification on Failure
         if: failure()
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@v1.23.0  # Replace with actual version tag
         with:
           payload: |
             {
