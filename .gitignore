@@ -16,27 +16,31 @@ __pycache__/           # Byte-compiled Python files
 *.pyd                  # Windows Python DLLs
 *.db                   # Database files
 instance/              # Flask/Django instance folder
-.env                  # Environment variable files
-.env.*                # Additional environment files
-.venv/                # Virtual environment folder
-venv/                 # Alternative virtual environment name
-pip-log.txt           # pip logs
+.env                   # Environment variable files
+.env.*                 # Additional environment files
+.venv/                 # Virtual environment folder
+venv/                  # Alternative virtual environment name
 
 # --------------------------------------
-# 🐳 Docker
+# 🗃️ Version Control
 # --------------------------------------
-Dockerfile.*           # Alternate Dockerfile variations
-docker-compose.*       # Docker Compose variations
-.dockerignore          # Docker ignore files
+*.sha256               # SHA-256 checksum files
 
 # --------------------------------------
-# 📁 IDEs and Editors
+# 🖥️ IDEs and Editors
 # --------------------------------------
 .vscode/              # Visual Studio Code settings
 .idea/                # IntelliJ IDEA settings
 *.sublime-project     # Sublime Text project files
 *.sublime-workspace   # Sublime Text workspace files
 *.code-workspace      # VS Code workspace files
+
+# --------------------------------------
+# 📦 Node.js
+# --------------------------------------
+node_modules/          # Node.js modules folder
+npm-debug.log*         # NPM debug log files
+yarn-error.log         # Yarn error log files
 
 # --------------------------------------
 # 📝 Documentation
@@ -50,6 +54,18 @@ site/                 # Static documentation sites
 # --------------------------------------
 .github/workflows/*.log  # CI/CD Workflow Logs
 .github/*.cache          # Workflow Caches
+
+# --------------------------------------
+# 🚀 Deployment
+# --------------------------------------
+.DS_Store              # macOS Finder metadata
+*.pid                  # PID files
+*.seed                 # Seed files
+*.pid.lock             # Lock files
+coverage/              # Code coverage results
+dist/                  # Distribution folder
+build/                 # Build folder
+tmp/                   # Temporary files
 
 # --------------------------------------
 # 🗂️ Operating System Files
