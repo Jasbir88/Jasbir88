@@ -102,7 +102,7 @@ jobs:
 
       - name: Send Slack Notification on Success
         if: success()
-        uses: slackapi/slack-github-action@v1.23.0  # Use a valid version
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
         with:
           payload: |
             {
@@ -113,7 +113,7 @@ jobs:
 
       - name: Send Slack Notification on Failure
         if: failure()
-        uses: slackapi/slack-github-action@v1.23.0
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
         with:
           payload: |
             {

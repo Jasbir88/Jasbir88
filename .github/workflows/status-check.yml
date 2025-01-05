@@ -23,7 +23,7 @@ jobs:
 
       - name: Validate Essential Scripts
         run: |
-          echo "Validating presence of essential scripts..."
+          echo "🔍 Validating presence of essential scripts..."
           REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
           MISSING_SCRIPTS=()
           for script in "${REQUIRED_SCRIPTS[@]}"; do
@@ -32,10 +32,10 @@ jobs:
             fi
           done
           if [ ${#MISSING_SCRIPTS[@]} -ne 0 ]; then
-            echo "Missing scripts: ${MISSING_SCRIPTS[@]}"
+            echo "❌ Missing scripts: ${MISSING_SCRIPTS[@]}"
             exit 1
           else
-            echo "All essential scripts are present."
+            echo "✅ All essential scripts are present."
           fi
 
       - name: Set Execute Permissions
@@ -46,15 +46,15 @@ jobs:
 
       - name: Success Message
         if: success()
-        run: echo "Validation completed successfully. All scripts are in place."
+        run: echo "✅ Validation completed successfully. All scripts are in place."
 
       - name: Failure Message
         if: failure()
-        run: echo "Validation failed. Some essential scripts are missing. Check the logs for details."
+        run: echo "❌ Validation failed. Some essential scripts are missing. Check the logs for details."
 
       - name: Slack Notification on Success
         if: success()
-        uses: slackapi/slack-github-action@v1.23.0  # Replace with actual version tag
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
         with:
           payload: |
             {
@@ -65,7 +65,7 @@ jobs:
 
       - name: Slack Notification on Failure
         if: failure()
-        uses: slackapi/slack-github-action@v1.23.0  # Replace with actual version tag
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
         with:
           payload: |
             {
