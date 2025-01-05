@@ -1,0 +1,6 @@
+
+### **Commit Documentation Changes**
+```bash
+git add README.md
+git commit -m "docs: update README with project enhancements"
+git push origin main

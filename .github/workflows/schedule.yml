@@ -1,0 +1,47 @@
+name: Scheduled Workflow
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Adjust the cron schedule as needed
+
+jobs:
+  scheduled-job:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set Execute Permissions
+        run: chmod +x ./run_all.sh
+
+      - name: Run All Scripts
+        run: ./run_all.sh
+
+      - name: Send Slack Notification on Success
+        if: success()
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
+        with:
+          payload: |
+            {
+              "text": "✅ Scheduled workflow executed successfully! 🎉"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send Slack Notification on Failure
+        if: failure()
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
+        with:
+          payload: |
+            {
+              "text": "❌ Scheduled workflow execution failed! 🚨"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
