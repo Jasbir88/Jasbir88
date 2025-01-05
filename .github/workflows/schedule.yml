@@ -7,7 +7,7 @@ permissions:
   
 on:
   schedule:
-    - cron: '0 0 * * *'  # Adjust the cron schedule as needed
+    - cron: '0 12 * * *'  # Adjusted the cron schedule to run at 12 PM UTC daily
 
 jobs:
   scheduled-job:
