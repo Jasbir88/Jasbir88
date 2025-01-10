@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout Code
       - name: 🛠️ Checkout Repository
         uses: actions/checkout@v2
 
@@ -75,7 +74,7 @@ jobs:
 
       - name: Send Slack Notification on Success
         if: success()
-        uses: slackapi/slack-github-action@v1.24.0  # Use a valid version tag
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
         with:
           payload: |
             {
@@ -86,7 +85,7 @@ jobs:
 
       - name: Send Slack Notification on Failure
         if: failure()
-        uses: slackapi/slack-github-action@v1.24.0  # Use a valid version tag
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
         with:
           payload: |
             {
@@ -103,7 +102,7 @@ jobs:
 
     steps:
       - name: 🛠️ Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: 🚀 Deploy Application
         run: |
