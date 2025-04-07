@@ -1,3 +1,4 @@
+#!/bin/bash
 name: Validate Essential Scripts in Branches
 
 permissions:
@@ -32,7 +33,7 @@ jobs:
             fi
           done
           if [ ${#MISSING_SCRIPTS[@]} -ne 0 ]; then
-            echo "❌ Missing scripts: ${MISSING_SCRIPTS[@]}"
+            echo "❌ Missing scripts: ${MISSING_SCRIPTS[*]}"
             exit 1
           else
             echo "✅ All essential scripts are present."
