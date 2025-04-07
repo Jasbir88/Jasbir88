@@ -17,7 +17,7 @@ jobs:
   script-check:
     runs-on: ubuntu-latest
     env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      SLACK_WEBHOOK_URL: "${{ secrets.SLACK_WEBHOOK_URL }}"  # Fix: Properly quote the variable
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -69,7 +69,7 @@ jobs:
           echo "✅ All scripts executed successfully."
 
       - name: Success Message
-        if: success()
+        if: success()  # Fix: Correct the use of `if` statement
         run: echo "✅ Validation completed successfully. All scripts are in place."
 
       - name: Failure Message
@@ -85,7 +85,7 @@ jobs:
               "text": "✅ CI/CD Workflow succeeded! 🎉"
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: "${{ secrets.SLACK_WEBHOOK_URL }}"
 
       - name: Slack Notification on Failure
         if: failure()
@@ -96,4 +96,4 @@ jobs:
               "text": "❌ CI/CD Workflow failed! 🚨"
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: "${{ secrets.SLACK_WEBHOOK_URL }}"
