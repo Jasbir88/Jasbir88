@@ -1,47 +1,98 @@
-#!/bin/bash
+name: Validate Essential Scripts in Branches
 
-# 🚀 Automated Branch Management Script
+permissions:
+  contents: read
+  pull-requests: write
 
-# Fetch latest changes and prune stale remote branches
-echo "🔄 Fetching and pruning remote branches..."
-git fetch --prune
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
 
-# Define an array of branches
-branches=(
-  "bugfix/fix-authentication-error"
-  "experiment/ai-integration"
-  "feature/login-page"
-  "feature/new-feature2"
-  "hotfix/security-patch"
-  "jasbir/learning-git"
-  "release/v1.0.0"
-  "main"
-  "master"
-)
+jobs:
+  script-check:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-# Loop through branches
-for branch in "${branches[@]}"; do
-    echo "🚀 Processing branch: $branch"
+      - name: Validate Essential Scripts
+        run: |
+          echo "🔍 Validating presence of essential scripts..."
+          REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
+          MISSING_SCRIPTS=()
+          for script in "${REQUIRED_SCRIPTS[@]}"; do
+            if [[ ! -f "$script" ]]; then
+              MISSING_SCRIPTS+=("$script")
+            fi
+          done
+          if [ ${#MISSING_SCRIPTS[@]} -ne 0 ]; then
+            echo "❌ Missing scripts: ${MISSING_SCRIPTS[@]}"
+            exit 1
+          else
+            echo "✅ All essential scripts are present."
+          fi
 
-    # Check if the branch exists locally
-    if git show-ref --verify --quiet refs/heads/"$branch"; then
-        echo "✅ Branch '$branch' exists locally. Switching to it..."
-        git checkout "$branch"
-        
-        # Check if it exists remotely
-        if git ls-remote --heads origin "$branch" | grep "$branch"; then
-            echo "⬇️ Pulling updates for '$branch'..."
-            git pull origin "$branch"
-        else
-            echo "⚠️ Branch '$branch' does not exist remotely. Pushing it now..."
-            git push -u origin "$branch"
-        fi
-    else
-        echo "❌ Branch '$branch' does not exist locally. Skipping..."
-    fi
-done
+      - name: Verify SHA-256 Checksums
+        run: |
+          echo "🔐 Verifying script integrity..."
+          for script in "${REQUIRED_SCRIPTS[@]}"; do
+            if [[ ! -f "$script.sha256" ]]; then
+              echo "❌ SHA-256 verification file missing for $script"
+              exit 1
+            fi
+            if ! sha256sum -c "$script.sha256" --status; then
+              echo "❌ SHA-256 verification failed for $script"
+              exit 1
+            fi
+          done
+          echo "✅ SHA-256 verification passed for all scripts."
 
-# Switch back to main
-git checkout main
-echo "🎉 All branches are up-to-date!"
+      - name: Set Execute Permissions
+        run: |
+          echo "🔑 Setting execute permissions for required scripts..."
+          for script in "${REQUIRED_SCRIPTS[@]}"; do
+            chmod +x "$script"
+          done
+          echo "✅ Execute permissions set."
 
+      - name: Run All Scripts
+        run: |
+          echo "🚀 Running all scripts..."
+          ./run_all.sh || { echo "❌ Error occurred while running scripts."; exit 1; }
+          echo "✅ All scripts executed successfully."
+
+      - name: Success Message
+        if: success()
+        run: echo "✅ Validation completed successfully. All scripts are in place."
+
+      - name: Failure Message
+        if: failure()
+        run: echo "❌ Validation failed. Some essential scripts are missing or failed integrity checks. Check the logs for details."
+
+      - name: Slack Notification on Success
+        if: success()
+        uses: slackapi/slack-github-action@b8e5b5f7b3f3d4b5b8e5b5f7b3f3d4b5b8e5b5f7  # Replace with actual commit SHA
+        with:
+          payload: |
+            {
+              "text": "✅ CI/CD Workflow succeeded! 🎉"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Slack Notification on Failure
+        if: failure()
+        uses: slackapi/slack-github-action@b8e5b5f7b3f3d4b5b8e5b5f7b3f3d4b5b8e5b5f7  # Replace with actual commit SHA
+        with:
+          payload: |
+            {
+              "text": "❌ CI/CD Workflow failed! 🚨"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
