@@ -40,7 +40,9 @@ set_execute_permissions() {
 # 🛠️ Function to verify SHA-256 checksum for a script
 verify_checksum() {
     local script_name=$1
-    local checksum_file="${script_name}.sha256"
+    local checksum_file="./${script_name}.sha256"  # Ensure the path is correct
+
+    echo "🔍 Looking for checksum file: $checksum_file"  # Debug statement
 
     if [[ -f "$checksum_file" ]]; then
         sha256sum -c "$checksum_file" --status
