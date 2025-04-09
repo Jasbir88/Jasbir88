@@ -74,11 +74,11 @@ jobs:
           fi
           echo "Tests completed."
 
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-
+          - name: Upload coverage reports to Codecov
+          uses: codecov/codecov-action@v5
+          with:
+            token: ${{ secrets.CODECOV_TOKEN }}
+          
       - name: 📦 Archive Logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -155,9 +155,11 @@ jobs:
       - name: Run Security Scan
         run: |
           echo "Running security scan..."
-          # Example: Using Trivy for scanning
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
-          ./trivy fs .
+          # Download and install Trivy
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b ./bin
+          chmod +x ./bin/trivy
+          # Run Trivy scan
+          ./bin/trivy fs .
 
   build:
     name: Build and Test
