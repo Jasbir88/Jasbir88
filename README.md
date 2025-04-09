@@ -8,10 +8,13 @@
 ⚡ Fun fact: I love to work alone but enjoy online collaboration!  
 
 ---
+
 # 🚀 **Git Automation Project**
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Jasbir88/Jasbir88/ci-cd.yml?branch=main)
 ![License](https://img.shields.io/badge/License-MIT-blue)
+[![Coverage Status](https://codecov.io/gh/Jasbir88/Jasbir88/branch/main/graph/badge.svg)](https://codecov.io/gh/Jasbir88/Jasbir88)
+[![Known Vulnerabilities](https://snyk.io/test/github/Jasbir88/Jasbir88/badge.svg)](https://snyk.io/test/github/Jasbir88/Jasbir88)
 
 ## 📚 **Overview**
 This project automates Git workflows and CI/CD pipelines for consistent and efficient development processes. It integrates Slack notifications, automated branch maintenance, and shell script validations.
@@ -45,6 +48,3 @@ This project automates Git workflows and CI/CD pipelines for consistent and effi
    ```bash
    git clone https://github.com/Jasbir88/Jasbir88.git
    cd Jasbir88
-
-
----
