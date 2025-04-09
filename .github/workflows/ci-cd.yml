@@ -18,26 +18,38 @@ jobs:
   lint-and-test:
     name: 🧪 Lint, Validate, and Test
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10] # Matrix build for Python versions
 
     steps:
       - name: 🛠️ Checkout Repository
         uses: actions/checkout@v2
 
-      # Step 2: Set Up Environment
-      - name: ⚙️ Set Up Environment
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y shellcheck bash python3 python3-pip
-          echo "✅ Environment set up successfully."
+      - name: Cache Python Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
-      # Step 3: Validate Bash Scripts
+      - name: ⚙️ Set Up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+
       - name: 🔍 Lint and Validate Bash Scripts
         run: |
           echo "🔄 Checking all shell scripts for linting errors..."
           find . -type f -name "*.sh" -exec shellcheck {} \;
           echo "✅ All scripts passed ShellCheck."
 
-      # Step 4: Validate Bash Syntax
       - name: Validate Bash Script Syntax
         run: |
           echo "Validating bash script syntax..."
@@ -46,14 +58,12 @@ jobs:
           done
           echo "All scripts passed syntax validation."
 
-      # Step 5: Ensure Scripts Are Executable
       - name: Ensure Scripts Are Executable
         run: |
           chmod +x *.sh
           chmod +x ./tests/*.sh || true
           echo "Executable permissions ensured."
 
-      # Step 6: Run Tests
       - name: Run Tests
         run: |
           echo "Running tests..."
@@ -64,35 +74,17 @@ jobs:
           fi
           echo "Tests completed."
 
-      # Step 7: Archive Logs (if any)
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: 📦 Archive Logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: logs
           path: ./run_all.log
-
-      - name: Send Slack Notification on Success
-        if: success()
-        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
-        with:
-          payload: |
-            {
-              "text": "✅ CI/CD Workflow Succeeded: All checks passed and deployment successful. 🎉"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Send Slack Notification on Failure
-        if: failure()
-        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
-        with:
-          payload: |
-            {
-              "text": "❌ CI/CD Workflow Failed: Check GitHub Actions for details. 🚨"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   deployment:
     name: 🚀 Deployment
@@ -116,6 +108,12 @@ jobs:
           echo "🔄 Verifying deployment..."
           # Add verification steps here
           echo "✅ Deployment verified."
+
+      - name: Rollback on Failure
+        if: failure()
+        run: |
+          echo "Rolling back deployment..."
+          # Add rollback commands here
 
   notifications:
     name: Notifications
@@ -146,7 +144,23 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  security-scan:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛠️ Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Run Security Scan
+        run: |
+          echo "Running security scan..."
+          # Example: Using Trivy for scanning
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+          ./trivy fs .
+
   build:
+    name: Build and Test
     runs-on: ubuntu-latest
 
     steps:
@@ -157,25 +171,3 @@ jobs:
         run: |
           echo "Running build and tests..."
           # Add your build and test commands here
-
-      - name: Send Slack Notification on Success
-        if: success()
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          payload: |
-            {
-              "text": "✅ CI/CD Workflow Succeeded: All checks passed and deployment successful. 🎉"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Send Slack Notification on Failure
-        if: failure()
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          payload: |
-            {
-              "text": "❌ CI/CD Workflow Failed: Check GitHub Actions for details. 🚨"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
