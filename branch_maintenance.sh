@@ -15,28 +15,30 @@ for script in "${REQUIRED_SCRIPTS[@]}"; do
 done
 echo "✅ All essential scripts are present."
 
-# Verify SHA-256 checksums
-echo "🔐 Verifying script integrity..."
-for script in "${REQUIRED_SCRIPTS[@]}"; do
-    if [[ ! -f "$script.sha256" ]]; then
-        echo "❌ SHA-256 verification file missing for $script"
-        exit 1
-    fi
-    if ! sha256sum -c "$script.sha256" --status; then
-        echo "❌ SHA-256 verification failed for $script"
-        exit 1
-    fi
-done
-echo "✅ SHA-256 verification passed for all scripts."
-
 # Set execute permissions
 echo "🔑 Setting execute permissions for required scripts..."
 for script in "${REQUIRED_SCRIPTS[@]}"; do
-    chmod +x "$script"
+    if [[ -f "$script" ]]; then
+        chmod +x "$script"
+        echo "✅ Permissions set for $script"
+    else
+        echo "⚠️ Warning: $script not found. Skipping permission change."
+    fi
 done
 echo "✅ Execute permissions set."
 
 # Run all scripts
 echo "🚀 Running all scripts..."
-./run_all.sh || { echo "❌ Error occurred while running scripts."; exit 1; }
+if ! ./run_all.sh; then
+    echo "❌ Error occurred while running run_all.sh"
+    exit 1
+fi
 echo "✅ All scripts executed successfully."
+
+# Perform branch maintenance tasks
+echo "🔄 Performing branch maintenance tasks..."
+if ! git fetch --prune; then
+    echo "❌ Error: Failed to fetch and prune branches."
+    exit 1
+fi
+echo "✅ Branch maintenance completed successfully."

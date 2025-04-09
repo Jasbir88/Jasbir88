@@ -18,15 +18,22 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set Execute Permissions
-        run: chmod +x ./run_all.sh
+        run: |
+          echo "🔑 Setting execute permissions for required scripts..."
+          chmod +x ./run_all.sh || { echo "❌ Failed to set execute permissions for run_all.sh"; exit 1; }
+          echo "✅ Execute permissions set."
 
       - name: Run All Scripts
         run: |
-          ./run_all.sh
+          echo "🚀 Running all scripts..."
+          ./run_all.sh || { echo "❌ Error occurred while running run_all.sh"; exit 1; }
+          echo "✅ All scripts executed successfully."
         continue-on-error: false
 
       - name: Log Output
-        run: cat ./run_all.log || echo "No log file found."
+        run: |
+          echo "📄 Displaying log output..."
+          cat ./run_all.log || echo "⚠️ No log file found."
 
       - name: Send Slack Notification on Success
         if: success()

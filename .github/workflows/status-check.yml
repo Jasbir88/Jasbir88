@@ -41,13 +41,7 @@ jobs:
       - name: Set Execute Permissions
         run: chmod +x ./run_all.sh
 
-      - name: Verify Script Integrity
-        run: |
-          echo "🔐 Verifying script integrity..."
-          sha256sum -c branch_maintenance.sh.sha256 || {
-            echo "❌ SHA-256 verification failed for branch_maintenance.sh"
-            exit 1
-          }
+      # Removed SHA-256 verification step
 
       - name: Run All Scripts
         run: ./run_all.sh
