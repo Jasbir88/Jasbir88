@@ -1,4 +1,4 @@
-name: Status Check
+name: Validate Essential Scripts in Branches
 
 permissions:
   contents: read
@@ -7,13 +7,13 @@ permissions:
 on:
   push:
     branches:
-      - '**'
+      - '*'
   pull_request:
     branches:
-      - '**'
+      - '*'
 
 jobs:
-  status-check:
+  script-check:
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -40,8 +40,6 @@ jobs:
 
       - name: Set Execute Permissions
         run: chmod +x ./run_all.sh
-
-      # Removed SHA-256 verification step
 
       - name: Run All Scripts
         run: ./run_all.sh

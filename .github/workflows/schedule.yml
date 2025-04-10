@@ -1,0 +1,58 @@
+name: Scheduled Workflow
+
+permissions:
+  contents: read
+  actions: read
+  
+on:
+  schedule:
+    - cron: '0 12 * * *'  # Runs at 12 PM UTC daily
+
+jobs:
+  scheduled-job:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set Execute Permissions
+        run: |
+          echo "🔑 Setting execute permissions for required scripts..."
+          chmod +x ./run_all.sh || { echo "❌ Failed to set execute permissions for run_all.sh"; exit 1; }
+          echo "✅ Execute permissions set."
+
+      - name: Run All Scripts
+        run: |
+          echo "🚀 Running all scripts..."
+          ./run_all.sh || { echo "❌ Error occurred while running run_all.sh"; exit 1; }
+          echo "✅ All scripts executed successfully."
+        continue-on-error: false
+
+      - name: Log Output
+        run: |
+          echo "📄 Displaying log output..."
+          cat ./run_all.log || echo "⚠️ No log file found."
+
+      - name: Send Slack Notification on Success
+        if: success()
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "text": "✅ Scheduled workflow executed successfully! 🎉"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send Slack Notification on Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "text": "❌ Scheduled workflow execution failed! 🚨"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

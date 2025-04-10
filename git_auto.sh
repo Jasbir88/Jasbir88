@@ -1,5 +1,6 @@
 #!/bin/bash
 
+feature/new-feature
 # 🚀 Automated Git Workflow Script
 
 set -e  # Exit on errors
@@ -11,8 +12,16 @@ if [[ "$1" == "--help" ]]; then
     exit 0
 fi
 
+# Automated Git Workflow Script for All Branches
+
+# Set Commit Message
+
+# Automated Git Workflow Script
+main
+
 # Set Variables
 BRANCH=$(git branch --show-current)
+hotfix/security-patch
 COMMIT_MSG=${1:-"Automated commit"}
 
 # Validate Branch
@@ -23,23 +32,34 @@ fi
 
 # Fetch Latest Changes
 echo "🔄 Fetching latest changes from origin..."
-git fetch origin
+git fetch --all
 
-# Pull Changes
-echo "⬇️ Pulling latest changes from $BRANCH..."
-git pull origin "$BRANCH"
+# Iterate through all branches
+for BRANCH in $(git branch --format='%(refname:short)'); do
+    echo "🔀 Switching to branch: $BRANCH"
+    git checkout "$BRANCH"
+
+
+    # Pull Changes with Automatic Conflict Resolution
+    echo "⬇️ Pulling latest changes from $BRANCH with automatic conflict resolution..."
+    git pull --strategy-option=theirs origin "$BRANCH"
 
 # Add Changes
 echo "➕ Adding changes..."
 git add .
+hotfix/security-patch
 
-# Commit Changes
-echo "✅ Committing changes with message: '$COMMIT_MSG'"
-git commit -m "$COMMIT_MSG"
+    # Add Changes
+    echo "➕ Adding changes..."
+    git add .
 
-# Push Changes
-echo "🚀 Pushing changes to origin/$BRANCH..."
-git push origin "$BRANCH"
+    # Commit Changes
+    echo "✅ Committing changes with message: '$COMMIT_MSG'"
+    git commit -m "$COMMIT_MSG"
 
-echo "🎉 Automation Complete!"
+    # Push Changes
+    echo "🚀 Pushing changes to origin/$BRANCH..."
+    git push origin "$BRANCH"
+done
 
+echo "🎉 Automation Complete for All Branches!"
