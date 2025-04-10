@@ -3,6 +3,12 @@
 # Automated Git Workflow Script for All Branches
 
 # Set Commit Message
+
+# Automated Git Workflow Script
+
+# Set Variables
+BRANCH=$(git branch --show-current)
+hotfix/security-patch
 COMMIT_MSG=${1:-"Automated commit"}
 
 # Fetch Latest Changes
@@ -14,9 +20,15 @@ for BRANCH in $(git branch --format='%(refname:short)'); do
     echo "🔀 Switching to branch: $BRANCH"
     git checkout "$BRANCH"
 
+
     # Pull Changes with Automatic Conflict Resolution
     echo "⬇️ Pulling latest changes from $BRANCH with automatic conflict resolution..."
     git pull --strategy-option=theirs origin "$BRANCH"
+
+# Add Changes
+echo "➕ Adding changes..."
+git add .
+hotfix/security-patch
 
     # Add Changes
     echo "➕ Adding changes..."
