@@ -1,0 +1,35 @@
+# Dependabot Configuration File
+# For more details, refer to:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Python Dependencies
+  - package-ecosystem: "pip"
+    directory: "/"  # Ensure this is the correct directory where your requirements.txt is located
+    schedule:
+      interval: "weekly"  # Dependabot will check for updates weekly
+    open-pull-requests-limit: 10  # Limit the number of open PRs
+    ignore:
+      - dependency-name: "example-package"
+        versions: ["<2.0.0"]  # Ignore updates for versions below 2.0.0
+
+  # Node.js Dependencies
+  - package-ecosystem: "npm"
+    directory: "/"  # Ensure this is the correct directory where your package.json is located
+    schedule:
+      interval: "weekly"  # Dependabot will check for updates weekly
+    open-pull-requests-limit: 10  # Limit the number of open PRs
+    ignore:
+      - dependency-name: "example-package"
+        versions: ["<2.0.0"]  # Ignore updates for versions below 2.0.0
+
+  # Docker Dependencies
+  - package-ecosystem: "docker"
+    directory: "/"  # Ensure this is the correct directory where your Dockerfile is located
+    schedule:
+      interval: "weekly"  # Dependabot will check for updates weekly
+    open-pull-requests-limit: 10  # Limit the number of open PRs
+    ignore:
+      - dependency-name: "example-image"
+        versions: ["<2.0.0"]  # Ignore updates for versions below 2.0.0
