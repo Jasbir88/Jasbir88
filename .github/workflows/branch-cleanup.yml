@@ -1,0 +1,23 @@
+name: Branch Cleanup
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Runs every Sunday at midnight
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Delete Stale Branches
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch --prune
+          for branch in $(git branch -r --merged | grep -vE 'origin/(main|develop|HEAD)'); do
+            BRANCH_NAME=$(echo $branch | sed 's/origin\///')
+            echo "Deleting stale branch: $BRANCH_NAME"
+            git push origin --delete "$BRANCH_NAME"
+          done

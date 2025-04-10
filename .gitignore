@@ -1,4 +1,147 @@
-# Ignore temporary files created by nano or other editors
-*~
-#*
+# --------------------------------------
+# 🛠️ General Patterns
+# --------------------------------------
+*.log                  # Log files
+*.tmp                  # Temporary files
+*.swp                  # Swap files from editors
+*.bak                  # Backup files
+*~                     # Temporary backup files
 
+# --------------------------------------
+# 🐍 Python
+# --------------------------------------
+__pycache__/           # Byte-compiled Python files
+*.py[cod]              # Python compiled files
+*.pyo                  # Optimized Python files
+*.pyd                  # Windows Python DLLs
+*.db                   # Database files
+instance/              # Flask/Django instance folder
+.env                   # Environment variable files
+.env.*                 # Additional environment files
+.venv/                 # Virtual environment folder
+venv/                  # Alternative virtual environment name
+
+# --------------------------------------
+# 🗃️ Version Control
+# --------------------------------------
+*.sha256               # SHA-256 checksum files
+
+# --------------------------------------
+# 🖥️ IDEs and Editors
+# --------------------------------------
+.vscode/              # Visual Studio Code settings
+.idea/                # IntelliJ IDEA settings
+*.sublime-project     # Sublime Text project files
+*.sublime-workspace   # Sublime Text workspace files
+*.code-workspace      # VS Code workspace files
+
+# --------------------------------------
+# 📦 Node.js
+# --------------------------------------
+node_modules/          # Node.js modules folder
+npm-debug.log*         # NPM debug log files
+yarn-error.log         # Yarn error log files
+
+# --------------------------------------
+# 📝 Documentation
+# --------------------------------------
+*.md~                 # Temporary Markdown backups
+docs/build/           # Built documentation
+site/                 # Static documentation sites
+
+# --------------------------------------
+# 🚀 CI/CD and Workflows
+# --------------------------------------
+.github/workflows/*.log  # CI/CD Workflow Logs
+.github/*.cache          # Workflow Caches
+
+# --------------------------------------
+# 🚀 Deployment
+# --------------------------------------
+.DS_Store              # macOS Finder metadata
+*.pid                  # PID files
+*.seed                 # Seed files
+*.pid.lock             # Lock files
+coverage/              # Code coverage results
+dist/                  # Distribution folder
+build/                 # Build folder
+tmp/                   # Temporary files
+
+# --------------------------------------
+# 🗂️ Operating System Files
+# --------------------------------------
+.DS_Store             # macOS system files
+Thumbs.db             # Windows thumbnail cache
+ehthumbs.db           # Windows thumbnail cache
+Icon?                # macOS Icon files
+
+# --------------------------------------
+# 🛡️ Secrets
+# --------------------------------------
+secrets.*             # Secrets files
+config.json           # Sensitive configuration files
+*.key                 # SSH or encryption keys
+*.pem                 # Key files
+
+# --------------------------------------
+# 🔄 Build and Deploy Artifacts
+# --------------------------------------
+dist/                 # Distribution folder
+build/                # Build folder
+*.tar.gz              # Archive files
+*.zip                 # Compressed files
+*.tar.bz2             # Archived build files
+
+# --------------------------------------
+# 🛠️ Git Specific
+# --------------------------------------
+.gitignore~           # Backup gitignore
+.gitconfig            # Git configuration files
+.gitmodules           # Git submodules
+.gitattributes        # Git attributes
+*.lock                # Git lock files
+
+# --------------------------------------
+# ⚙️ Custom Scripts
+# --------------------------------------
+run_all.log           # Logs from automation scripts
+*.sh~                 # Backup shell scripts
+logs/                 # Custom logs folder
+
+# --------------------------------------
+# 🚫 Temporary or Testing Files
+# --------------------------------------
+test/                 # Test directories
+temp/                 # Temporary folders
+scratch/              # Experimental workspaces
+debug/                # Debug artifacts
+
+# --------------------------------------
+# 📦 Package Managers
+# --------------------------------------
+node_modules/         # Node.js dependencies
+package-lock.json     # npm lockfile
+yarn.lock             # Yarn lockfile
+.babelrc              # Babel configuration
+.eslintrc.json        # ESLint configuration
+
+# --------------------------------------
+# 🧪 Testing and Coverage
+# --------------------------------------
+.coverage             # Coverage reports
+htmlcov/              # HTML coverage reports
+*.cover               # Test coverage files
+nosetests.xml         # Nose test results
+pytest_cache/         # pytest cache folder
+
+# --------------------------------------
+# 📊 Monitoring and Analytics
+# --------------------------------------
+monitoring/           # Monitoring artifacts
+reports/              # Test and deployment reports
+results/              # Automation results
+
+# --------------------------------------
+# 🚨 Manual Overrides (Exceptions)
+# --------------------------------------
+# !important_file.txt  # Example of force inclusion (uncomment when needed)
