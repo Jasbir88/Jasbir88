@@ -3,11 +3,10 @@ name: Scheduled Workflow
 permissions:
   contents: read
   actions: read
-  pull-requests: write
   
 on:
   schedule:
-    - cron: '0 0 * * *'  # Adjust the cron schedule as needed
+    - cron: '0 12 * * *'  # Runs at 12 PM UTC daily
 
 jobs:
   scheduled-job:
@@ -16,17 +15,29 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set Execute Permissions
-        run: chmod +x ./run_all.sh
+        run: |
+          echo "🔑 Setting execute permissions for required scripts..."
+          chmod +x ./run_all.sh || { echo "❌ Failed to set execute permissions for run_all.sh"; exit 1; }
+          echo "✅ Execute permissions set."
 
       - name: Run All Scripts
-        run: ./run_all.sh
+        run: |
+          echo "🚀 Running all scripts..."
+          ./run_all.sh || { echo "❌ Error occurred while running run_all.sh"; exit 1; }
+          echo "✅ All scripts executed successfully."
+        continue-on-error: false
+
+      - name: Log Output
+        run: |
+          echo "📄 Displaying log output..."
+          cat ./run_all.log || echo "⚠️ No log file found."
 
       - name: Send Slack Notification on Success
         if: success()
-        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
+        uses: slackapi/slack-github-action@v1.23.0
         with:
           payload: |
             {
@@ -37,7 +48,7 @@ jobs:
 
       - name: Send Slack Notification on Failure
         if: failure()
-        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
+        uses: slackapi/slack-github-action@v1.23.0
         with:
           payload: |
             {
