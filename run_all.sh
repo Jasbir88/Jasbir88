@@ -1,6 +1,21 @@
 #!/bin/bash
 
 experiment/ai-integration
+experiment/ai-integration
+
+bugfix/fix-auth-error
+echo "🔧 Starting Branch Maintenance..."
+
+# Verify the script exists in the branch
+if [[ ! -f "./run_all.sh" ]]; then
+    echo "🛑 Error: run_all.sh is missing in this branch. Exiting..."
+    exit 1
+fi
+
+# Stash local changes
+if [[ $(git status --porcelain) ]]; then
+    echo "🛑 Local changes detected. Stashing temporarily..."
+main
 
 # 🚀 Enhanced Git Automation Script
 set -e  # Exit immediately on any error
@@ -142,11 +157,30 @@ error() {
 # 📝 Stash Local Changes Before Starting
 if [[ $(git status --porcelain) ]]; then
     log "Local changes detected. Stashing temporarily..."
+main
     git stash push -m "Temporary stash for branch switch"
     STASH_APPLIED=true
 else
     STASH_APPLIED=false
 fi
+
+bugfix/fix-auth-error
+./branch_maintenance.sh
+./branch_manager.sh -l
+./git_auto.sh "Automated commit after refinements"
+
+# Apply stashed changes
+if [[ "$STASH_APPLIED" == "true" ]]; then
+    echo "🔄 Applying stashed changes..."
+    git stash pop
+    git add run_all.sh
+    git commit -m "fix: reapply stashed changes after automation"
+    git push origin $(git branch --show-current)
+fi
+
+echo "✅ All scripts executed successfully!"
+
+
 
 # 🔄 Update All Branches
 log "Starting Branch Maintenance..."
