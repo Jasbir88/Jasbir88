@@ -1,5 +1,7 @@
 #!/bin/bash
 
+release/v1.0.0
+
 # 🚀 Branch Maintenance Script
 
 # Define required scripts
@@ -43,6 +45,7 @@ if ! git fetch --prune; then
 fi
 echo "✅ Branch maintenance completed successfully."
 
+main
 # 🚀 Automated Branch Management Script
 
 # Fetch latest changes and prune stale remote branches
@@ -88,4 +91,7 @@ done
 git checkout main
 echo "🎉 All branches are up-to-date!"
 
+release/v1.0.0
+
 hotfix/security-patch
+main

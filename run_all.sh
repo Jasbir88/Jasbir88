@@ -1,5 +1,8 @@
 #!/bin/bash
 
+release/v1.0.0
+release/v1.0.0
+
 bugfix/fix-auth-error
 echo "🔧 Starting Branch Maintenance..."
 
@@ -12,6 +15,7 @@ fi
 # Stash local changes
 if [[ $(git status --porcelain) ]]; then
     echo "🛑 Local changes detected. Stashing temporarily..."
+main
 
 # 🚀 Enhanced Git Automation Script
 set -e  # Exit immediately on any error
@@ -130,6 +134,7 @@ apply_stashed_changes
 
 echo "🎯 Enhanced Git Workflow completed successfully!"
 
+main
 # 🚀 Unified Git Workflow Script
 # Automates branch maintenance, branch management, and git operations
 
@@ -206,5 +211,6 @@ fi
 # ✅ Final Confirmation
 log "All scripts executed successfully. Branches are up-to-date!"
 
+release/v1.0.0
 hotfix/security-patch
 main

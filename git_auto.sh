@@ -1,14 +1,20 @@
 #!/bin/bash
 
+release/v1.0.0
+
 # Automated Git Workflow Script for All Branches
 
 # Set Commit Message
 
+main
 # Automated Git Workflow Script
 
 # Set Variables
 BRANCH=$(git branch --show-current)
+release/v1.0.0
+
 hotfix/security-patch
+main
 COMMIT_MSG=${1:-"Automated commit"}
 
 # Fetch Latest Changes
@@ -28,7 +34,10 @@ for BRANCH in $(git branch --format='%(refname:short)'); do
 # Add Changes
 echo "➕ Adding changes..."
 git add .
+release/v1.0.0
+
 hotfix/security-patch
+main
 
     # Add Changes
     echo "➕ Adding changes..."
