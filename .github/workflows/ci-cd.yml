@@ -7,6 +7,18 @@ on:
   pull_request:
     branches:
       - main
+fix/ci-shell-pins
+  schedule:
+    - cron: "0 23 * * 1,5" # Every Monday and Friday at 11PM UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+  pull-requests: write
+  pages: write
+  id-token: write
+  main
 
 jobs:
   build:
@@ -21,8 +33,15 @@ jobs:
       with:
         node-version: '16'
 
+fix/ci-shell-pins
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          
     - name: Install dependencies
       run: npm install
+main
 
     - name: Run tests
       run: npm test
@@ -32,8 +51,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+fix/ci-shell-pins
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Auto-update pip packages
+        id: auto-update
+        run: |
+          pip install pip-review
+          pip-review --auto
+          git config --global user.email "bot@github.com"
+          git config --global user.name "update-bot"
+          UPDATE_BRANCH=auto-update-${{ github.run_id }}
+          git checkout -b $UPDATE_BRANCH
+          git commit -am "🚀 Auto-updated Python dependencies"
+          git push origin $UPDATE_BRANCH
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: "🚀 Auto-update dependencies"
+          body: "This PR includes automated dependency updates."
+          branch: auto-update-${{ github.run_id }}
+
+      - name: Notify Slack of Auto Update
+        if: always()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"🌟 Auto-update check completed!"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+          
     - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Deploy to production
       run: echo "Deploying application..."
+main

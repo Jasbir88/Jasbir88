@@ -18,12 +18,12 @@ main
 COMMIT_MSG=${1:-"Automated commit"}
 
 # Fetch Latest Changes
-echo "ðŸ”„ Fetching latest changes from origin..."
+echo "„ Fetching latest changes from origin..."
 git fetch --all
 
 # Iterate through all branches
 for BRANCH in $(git branch --format='%(refname:short)'); do
-    echo "ðŸ”€ Switching to branch: $BRANCH"
+    echo "€ Switching to branch: $BRANCH"
     git checkout "$BRANCH"
 
 
@@ -44,12 +44,12 @@ main
     git add .
 
     # Commit Changes
-    echo "âœ… Committing changes with message: '$COMMIT_MSG'"
+    echo "âœ Committing changes with message: '$COMMIT_MSG'"
     git commit -m "$COMMIT_MSG"
 
     # Push Changes
-    echo "ðŸš€ Pushing changes to origin/$BRANCH..."
+    echo "€ Pushing changes to origin/$BRANCH..."
     git push origin "$BRANCH"
 done
 
-echo "ðŸŽ‰ Automation Complete for All Branches!"
+echo "‰ Automation Complete for All Branches!"

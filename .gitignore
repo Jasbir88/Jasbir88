@@ -145,3 +145,4 @@ results/              # Automation results
 # 🚨 Manual Overrides (Exceptions)
 # --------------------------------------
 # !important_file.txt  # Example of force inclusion (uncomment when needed)
+node_modules/

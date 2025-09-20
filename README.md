@@ -1,11 +1,11 @@
 # 🚀 **Jasbir88 Repository**
 
-👋 Hi, I’m **@Jasbir88**  
-👀 I’m passionate about **cybersecurity** and **full-stack development**.  
-🌱 Currently learning **full-stack software development**.  
-💞️ Open to collaborating on **tech-related projects**.  
-📫 Reach me at: **jasbir.88@gmail.com**  
-⚡ Fun fact: I enjoy working solo but thrive in online collaborations!  
+👋 Hi, I’m **@Jasbir88**
+👀 I’m passionate about **cybersecurity** and **full-stack development**.
+🌱 Currently learning **full-stack software development**.
+💞️ Open to collaborating on **tech-related projects**.
+📫 Reach me at: **jasbir.88@gmail.com**
+⚡ Fun fact: I enjoy working solo but thrive in online collaborations!
 
 ---
 
@@ -17,6 +17,7 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/Jasbir88/Jasbir88/badge.svg)](https://snyk.io/test/github/Jasbir88/Jasbir88)
 
 ### 📚 **Overview**
+
 This repository is dedicated to automating Git workflows and CI/CD pipelines for seamless and efficient development processes. It integrates **Slack notifications**, **automated branch maintenance**, and **shell script validations** to ensure high-quality code and streamlined operations.
 
 ---
@@ -45,7 +46,6 @@ Ensure you have the following tools installed:
 
 ---
 
-
 ### 🛠️ **Setup Guide**
 
 1. **Clone the Repository:**
@@ -56,8 +56,8 @@ Ensure you have the following tools installed:
    ```
 
 2. **Install Dependencies:**
-
    - For Python:
+
      ```bash
      python3 -m pip install --upgrade pip
      pip install -r requirements.txt
@@ -69,8 +69,8 @@ Ensure you have the following tools installed:
      ```
 
 3. **Run Linting:**
-
    - YAML Linting:
+
      ```bash
      yamllint .github/workflows/ci-cd.yml
      ```
@@ -81,8 +81,8 @@ Ensure you have the following tools installed:
      ```
 
 4. **Run Tests:**
-
    - Python Tests:
+
      ```bash
      pytest
      ```
@@ -145,6 +145,8 @@ For any questions or suggestions, feel free to reach out:
 ## 🌟 **Acknowledgments**
 
 Special thanks to the open-source community for providing amazing tools and resources that make this project possible.
+
 ```
 
 This version is more professional, informative, and user-friendly. Let me know if you'd like further refinements!
+```

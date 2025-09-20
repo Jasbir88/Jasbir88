@@ -4,9 +4,9 @@
 
 We provide support and security updates for the following versions:
 
-| Version | Supported          |
-|---------|---------------------|
-| 1.0.x   | ✅ Security Updates |
+| Version | Supported              |
+| ------- | ---------------------- |
+| 1.0.x   | ✅ Security Updates    |
 | 0.9.x   | ❌ No longer supported |
 
 ---
@@ -23,6 +23,7 @@ If you discover a security vulnerability in this project, please follow these st
    - Impact assessment if possible.
 
 We will:
+
 - Acknowledge your report within **48 hours**.
 - Work to resolve the issue promptly.
 - Credit you in release notes (if desired).
@@ -40,5 +41,6 @@ We will:
 ## 📝 Additional Information
 
 For more details, visit:
+
 - [Security Documentation](https://example.com/security)
 - [Changelog](./CHANGELOG.md)
