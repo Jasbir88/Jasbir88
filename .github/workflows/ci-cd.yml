@@ -7,220 +7,33 @@ on:
   pull_request:
     branches:
       - main
-  schedule:
-    - cron: '0 23 * * 1,5'  # Every Monday and Friday at 11PM UTC
-  workflow_dispatch:
-
-permissions:
-  contents: write
-  actions: read
-  pull-requests: write
-  pages: write
-  id-token: write
 
 jobs:
-  lint-and-test:
-    name: 🤪 Lint, Validate, and Test
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.8, 3.9]
-
-    steps:
-      - name: 🛠️ Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Cache Python Dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: ⚙️ Set Up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Check for requirements.txt
-        run: |
-          if [ ! -f "requirements.txt" ]; then
-            echo "requirements.txt not found. Skipping dependency installation."
-            exit 0
-          fi
-
-      - name: Install Dependencies
-        if: ${{ hashFiles('**/requirements.txt') != '' }}
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: 🔍 Lint and Validate Bash Scripts
-        run: |
-          echo "🔄 Checking all shell scripts for linting errors..."
-          find . -type f -name "*.sh" -exec shellcheck {} \; || true
-          echo "✅ All scripts passed ShellCheck."
-
-      - name: Validate Bash Script Syntax
-        run: |
-          echo "Validating bash script syntax..."
-          for script in $(find . -type f -name "*.sh"); do
-            bash -n "$script" || { echo "Syntax error in $script"; exit 1; }
-          done
-          echo "All scripts passed syntax validation."
-
-      - name: Ensure Scripts Are Executable
-        run: |
-          find . -type f -name "*.sh" -exec chmod +x {} \;
-          echo "Executable permissions ensured."
-
-      - name: Run Tests
-        run: |
-          echo "Running tests..."
-          if [[ -f "./tests/test_sample.sh" ]]; then
-            bash ./tests/test_sample.sh || true
-          else
-            echo "No test script found. Skipping tests."
-          fi
-          echo "Tests completed."
-
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN || '' }}
-          fail_ci_if_error: false
-
-      - name: 📦 Archive Logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: logs-${{ matrix.python-version }}
-          path: ./run_all.log
-
-  test-and-coverage:
-    name: Run JS Tests and Coverage
-    runs-on: ubuntu-latest
-    needs: lint-and-test
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - name: Check for package.json
-        run: |
-          if [ ! -f "./package.json" ]; then
-            echo "package.json not found. Skipping Node.js tests."
-            exit 0
-          fi
-
-      - name: Set Up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Dependencies
-        run: npm install || true
-
-      - name: Run Tests with Coverage
-        run: npx jest --coverage || true
-
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN || '' }}
-          fail_ci_if_error: false
-
   build:
-    name: 📁 Build Application
     runs-on: ubuntu-latest
-    needs: [lint-and-test, test-and-coverage]
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
 
-      - name: Build Application
-        run: |
-          echo "Building the application..."
-          if [[ -f "Makefile" ]]; then
-            make || true
-          elif [[ -f "package.json" ]]; then
-            npm run build || true
-          else
-            echo "No build script detected."
-          fi
-          echo "Build completed."
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
 
   deploy:
-    name: 🚀 Deploy Application
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    needs: build
+
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Deploy to Server
-        run: |
-          echo "Deploying the application..."
-          # Add your deployment command here
-          echo "Deployment completed."
-
-      - name: Notify Slack (Success)
-        if: success() && env.SLACK_WEBHOOK_URL != ''
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"✅ CI/CD pipeline succeeded for commit ${{ github.sha }} by ${{ github.actor }}. Deployed successfully!"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Notify Slack (Failure)
-        if: failure() && env.SLACK_WEBHOOK_URL != ''
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"❌ CI/CD pipeline failed at Deploy stage for commit ${{ github.sha }} by ${{ github.actor }}."}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: "v${{ github.run_number }}"
-          name: "Release v${{ github.run_number }}"
-          body: "Automated release generated by CI/CD pipeline."
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  auto-update:
-    name: 🚧 Auto Update Dependencies
-    runs-on: ubuntu-latest
-    if: github.event_name == 'schedule'
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Auto-update pip packages
-        id: auto-update
-        run: |
-          pip install pip-review
-          pip-review --auto || true
-          git config --global user.email "bot@github.com"
-          git config --global user.name "update-bot"
-          UPDATE_BRANCH=auto-update-${{ github.run_id }}
-          git checkout -b $UPDATE_BRANCH
-          git commit -am "🚀 Auto-updated Python dependencies" || echo "No updates to commit"
-          git push origin $UPDATE_BRANCH || true
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          title: "🚀 Auto-update dependencies"
-          body: "This PR includes automated dependency updates."
-          branch: auto-update-${{ github.run_id }}
-
-      - name: Notify Slack of Auto Update
-        if: always() && env.SLACK_WEBHOOK_URL != ''
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"🌟 Auto-update check completed!"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
+    - name: Deploy to production
+      run: echo "Deploying application..."
