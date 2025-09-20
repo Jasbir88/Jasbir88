@@ -8,7 +8,7 @@ WORKFLOW_FILE = ".github/workflows/ci-cd.yml"
 NEW_STEPS_TEMPLATE = """
       - name: Ensure Scripts Are Executable
         run: |
-          find . -type f -name "*.sh" -exec chmod +x {} \;
+          find . -type f -name "*.sh" -exec chmod +x {} \\;
           echo "Executable permissions ensured."
 
       - name: Check for requirements.txt
@@ -18,6 +18,7 @@ NEW_STEPS_TEMPLATE = """
             exit 1
           fi
 """
+
 
 def update_workflow():
     if not os.path.exists(WORKFLOW_FILE):
@@ -57,6 +58,7 @@ def update_workflow():
     with open(WORKFLOW_FILE, "w") as file:
         file.write(content)
     print(f"Workflow file '{WORKFLOW_FILE}' updated successfully.")
+
 
 if __name__ == "__main__":
     update_workflow()

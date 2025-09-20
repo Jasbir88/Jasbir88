@@ -41,8 +41,7 @@ case $1 in
         fi
         git checkout main
         git pull origin main
-        git merge "$2"
-        if [ $? -ne 0 ]; then
+        if ! git merge "$2"; then
             echo "❌ Error: Merge conflict or failure occurred. Resolve conflicts and try again."
             exit 1
         fi

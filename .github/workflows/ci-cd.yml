@@ -7,7 +7,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 23 * * 1,5'  # Every Monday and Friday at 11PM UTC
+    - cron: "0 23 * * 1,5" # Every Monday and Friday at 11PM UTC
   workflow_dispatch:
 
 permissions:
@@ -118,7 +118,7 @@ jobs:
       - name: Set Up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install Dependencies
         run: npm install
@@ -221,4 +221,3 @@ jobs:
           curl -X POST -H 'Content-type: application/json' \
           --data '{"text":"🌟 Auto-update check completed!"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
-

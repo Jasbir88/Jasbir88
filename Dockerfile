@@ -27,4 +27,3 @@ RUN find /app -type f -name "*.sh" -exec chmod +x {} +
 # Explicitly set the shell and entrypoint
 SHELL ["/bin/bash", "-c"]
 ENTRYPOINT ["/bin/bash", "/app/run_all.sh"]
-

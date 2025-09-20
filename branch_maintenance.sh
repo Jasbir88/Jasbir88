@@ -2,54 +2,54 @@
 
 release/v1.0.0
 
-# ğŸš€ Branch Maintenance Script
+# € Branch Maintenance Script
 
 # Define required scripts
 REQUIRED_SCRIPTS=("branch_maintenance.sh" "branch_manager.sh" "git_auto.sh" "run_all.sh")
 
 # Validate essential scripts
-echo "ğŸ” Validating presence of essential scripts..."
+echo " Validating presence of essential scripts..."
 for script in "${REQUIRED_SCRIPTS[@]}"; do
     if [[ ! -f "$script" ]]; then
         echo "âŒ Missing script: $script"
         exit 1
     fi
 done
-echo "âœ… All essential scripts are present."
+echo "âœ All essential scripts are present."
 
 # Set execute permissions
-echo "ğŸ”‘ Setting execute permissions for required scripts..."
+echo "‘ Setting execute permissions for required scripts..."
 for script in "${REQUIRED_SCRIPTS[@]}"; do
     if [[ -f "$script" ]]; then
         chmod +x "$script"
-        echo "âœ… Permissions set for $script"
+        echo "âœ Permissions set for $script"
     else
         echo "âš ï¸ Warning: $script not found. Skipping permission change."
     fi
 done
-echo "âœ… Execute permissions set."
+echo "âœ Execute permissions set."
 
 # Run all scripts
-echo "ğŸš€ Running all scripts..."
+echo "€ Running all scripts..."
 if ! ./run_all.sh; then
     echo "âŒ Error occurred while running run_all.sh"
     exit 1
 fi
-echo "âœ… All scripts executed successfully."
+echo "âœ All scripts executed successfully."
 
 # Perform branch maintenance tasks
-echo "ğŸ”„ Performing branch maintenance tasks..."
+echo "„ Performing branch maintenance tasks..."
 if ! git fetch --prune; then
     echo "âŒ Error: Failed to fetch and prune branches."
     exit 1
 fi
-echo "âœ… Branch maintenance completed successfully."
+echo "âœ Branch maintenance completed successfully."
 
 main
-# ğŸš€ Automated Branch Management Script
+# € Automated Branch Management Script
 
 # Fetch latest changes and prune stale remote branches
-echo "ğŸ”„ Fetching and pruning remote branches..."
+echo "„ Fetching and pruning remote branches..."
 git fetch --prune
 
 # Define an array of branches
@@ -67,13 +67,13 @@ branches=(
 
 # Loop through branches
 for branch in "${branches[@]}"; do
-    echo "ğŸš€ Processing branch: $branch"
+    echo "€ Processing branch: $branch"
 
     # Check if the branch exists locally
     if git show-ref --verify --quiet refs/heads/"$branch"; then
-        echo "âœ… Branch '$branch' exists locally. Switching to it..."
+        echo "âœ Branch '$branch' exists locally. Switching to it..."
         git checkout "$branch"
-        
+
         # Check if it exists remotely
         if git ls-remote --heads origin "$branch" | grep "$branch"; then
             echo "â¬‡ï¸ Pulling updates for '$branch'..."
@@ -89,7 +89,7 @@ done
 
 # Switch back to main
 git checkout main
-echo "ğŸ‰ All branches are up-to-date!"
+echo "‰ All branches are up-to-date!"
 
 release/v1.0.0
 
