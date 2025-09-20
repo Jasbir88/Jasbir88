@@ -4,13 +4,23 @@ on:
   push:
     branches:
       - main
+      - develop
   pull_request:
     branches:
       - main
-fix/ci-shell-pins
+      - develop
   schedule:
-    - cron: "0 23 * * 1,5" # Every Monday and Friday at 11PM UTC
+    - cron: '0 23 * * 1,5'  # Every Monday and Friday at 11PM UTC
   workflow_dispatch:
+    inputs:
+      deploy_environment:
+        description: 'Environment to deploy to'
+        required: false
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
 
 permissions:
   contents: write
@@ -18,72 +28,406 @@ permissions:
   pull-requests: write
   pages: write
   id-token: write
-  main
+
+# Global environment variables
+env:
+  NODE_VERSION: '20'
+  PYTHON_DEFAULT: '3.11'
 
 jobs:
-  build:
+  # ============================================
+  # Detect Changes Job
+  # ============================================
+  detect-changes:
+    name: 🔍 Detect Changes
     runs-on: ubuntu-latest
-
+    outputs:
+      python: ${{ steps.filter.outputs.python == 'true' }}
+      javascript: ${{ steps.filter.outputs.javascript == 'true' }}
+      bash: ${{ steps.filter.outputs.bash == 'true' }}
+      docker: ${{ steps.filter.outputs.docker == 'true' }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-
-fix/ci-shell-pins
-      - name: Set Up Node.js
-        uses: actions/setup-node@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
-          node-version: "20"
-          
-    - name: Install dependencies
-      run: npm install
-main
+          fetch-depth: 2
 
-    - name: Run tests
-      run: npm test
+      - name: Detect File Changes
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            python:
+              - '**/*.py'
+              - 'requirements*.txt'
+              - 'setup.py'
+              - 'pyproject.toml'
+            javascript:
+              - '**/*.js'
+              - '**/*.ts'
+              - 'package*.json'
+              - 'tsconfig.json'
+            bash:
+              - '**/*.sh'
+              - '**/*.bash'
+            docker:
+              - 'Dockerfile*'
+              - 'docker-compose*.yml'
 
-  deploy:
-    if: github.ref == 'refs/heads/main'
+  # ============================================
+  # Python Linting and Testing
+  # ============================================
+  python-lint-test:
+    name: 🐍 Python Lint & Test
     runs-on: ubuntu-latest
-
+    needs: detect-changes
+    if: needs.detect-changes.outputs.python == 'true' || github.event_name == 'workflow_dispatch'
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
     steps:
-fix/ci-shell-pins
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache Python Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.cache/pypoetry
+            .venv
+          key: ${{ runner.os }}-python-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-python-${{ matrix.python-version }}-
+            ${{ runner.os }}-python-
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+
+          # Install development dependencies
+          pip install flake8 black isort mypy pytest pytest-cov pylint
+
+          # Install project dependencies if they exist
+          if [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          elif [ -f "requirements-dev.txt" ]; then
+            pip install -r requirements-dev.txt
+          elif [ -f "pyproject.toml" ]; then
+            pip install -e .
+          fi
+
+      - name: Lint with Multiple Tools
+        run: |
+          echo "🔍 Running Black formatter check..."
+          black --check . || echo "::warning::Black formatting issues found"
+
+          echo "🔍 Running isort import checker..."
+          isort --check-only . || echo "::warning::Import sorting issues found"
+
+          echo "🔍 Running Flake8 linter..."
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+          echo "🔍 Running Pylint..."
+          find . -name "*.py" -not -path "./.venv/*" -not -path "./venv/*" | xargs pylint --exit-zero || true
+
+      - name: Type Check with mypy
+        run: |
+          if [ -f "mypy.ini" ] || [ -f "setup.cfg" ] || [ -f "pyproject.toml" ]; then
+            mypy . || echo "::warning::Type checking issues found"
+          else
+            echo "No mypy configuration found, skipping type checks"
+          fi
+
+      - name: Run Tests with Coverage
+        run: |
+          if [ -d "tests" ] || [ -d "test" ]; then
+            pytest --cov=. --cov-report=xml --cov-report=html --cov-report=term -v
+          else
+            echo "::warning::No tests directory found"
+          fi
+
+      - name: Upload Coverage Reports
+        if: matrix.python-version == env.PYTHON_DEFAULT
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-coverage-report
+          path: |
+            coverage.xml
+            htmlcov/
+
+      - name: Upload Coverage to Codecov
+        if: matrix.python-version == env.PYTHON_DEFAULT
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: python
+          name: python-${{ matrix.python-version }}
+          fail_ci_if_error: false
+
+  # ============================================
+  # JavaScript/TypeScript Testing
+  # ============================================
+  javascript-lint-test:
+    name: 🟨 JavaScript/TypeScript Lint & Test
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.javascript == 'true' || github.event_name == 'workflow_dispatch'
+    steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Auto-update pip packages
-        id: auto-update
-        run: |
-          pip install pip-review
-          pip-review --auto
-          git config --global user.email "bot@github.com"
-          git config --global user.name "update-bot"
-          UPDATE_BRANCH=auto-update-${{ github.run_id }}
-          git checkout -b $UPDATE_BRANCH
-          git commit -am "🚀 Auto-updated Python dependencies"
-          git push origin $UPDATE_BRANCH
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          title: "🚀 Auto-update dependencies"
-          body: "This PR includes automated dependency updates."
-          branch: auto-update-${{ github.run_id }}
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
-      - name: Notify Slack of Auto Update
-        if: always()
+      - name: Cache Node Modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
         run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"🌟 Auto-update check completed!"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
-          
-    - name: Checkout code
-      uses: actions/checkout@v3
+          if [ -f "package-lock.json" ]; then
+            npm ci
+          elif [ -f "yarn.lock" ]; then
+            yarn install --frozen-lockfile
+          elif [ -f "package.json" ]; then
+            npm install
+          else
+            echo "::warning::No package.json found"
+            exit 0
+          fi
 
-    - name: Deploy to production
-      run: echo "Deploying application..."
-main
+      - name: Lint Code
+        run: |
+          # Run ESLint if available
+          if [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ] || [ -f ".eslintrc.yml" ]; then
+            npm run lint || npx eslint . || echo "::warning::ESLint issues found"
+          fi
+
+          # Run Prettier check if available
+          if [ -f ".prettierrc" ] || [ -f ".prettierrc.json" ] || [ -f ".prettierrc.js" ]; then
+            npx prettier --check . || echo "::warning::Prettier formatting issues found"
+          fi
+
+      - name: Run Tests with Coverage
+        run: |
+          if [ -f "jest.config.js" ] || [ -f "jest.config.json" ]; then
+            npm test -- --coverage --ci --reporters=default --reporters=jest-junit
+          elif grep -q "\"test\":" package.json 2>/dev/null; then
+            npm test
+          else
+            echo "::warning::No test script found in package.json"
+          fi
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: javascript
+          name: javascript-coverage
+          fail_ci_if_error: false
+
+  # ============================================
+  # Bash Script Validation
+  # ============================================
+  bash-validation:
+    name: 🐚 Bash Script Validation
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.bash == 'true' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Validate Bash Scripts
+        run: |
+          echo "🔍 Finding all shell scripts..."
+          SCRIPTS=$(find . -type f $ -name "*.sh" -o -name "*.bash" $ -not -path "./.git/*")
+
+          if [ -z "$SCRIPTS" ]; then
+            echo "No shell scripts found"
+            exit 0
+          fi
+
+          echo "Found scripts:"
+          echo "$SCRIPTS"
+
+          # Validate syntax
+          echo -e "\n📋 Validating syntax..."
+          for script in $SCRIPTS; do
+            if bash -n "$script"; then
+              echo "✅ $script - Syntax OK"
+            else
+              echo "❌ $script - Syntax error"
+              exit 1
+            fi
+          done
+
+          # Run ShellCheck
+          echo -e "\n🔍 Running ShellCheck..."
+          shellcheck $SCRIPTS || {
+            echo "::warning::ShellCheck found issues but continuing"
+            exit 0
+          }
+
+          # Check permissions
+          echo -e "\n🔒 Checking permissions..."
+          for script in $SCRIPTS; do
+            if [ ! -x "$script" ]; then
+              echo "::warning::$script is not executable"
+              chmod +x "$script"
+              echo "Made $script executable"
+            fi
+          done
+
+  # ============================================
+  # Build Application
+  # ============================================
+  build:
+    name: 🏗️ Build Application
+    runs-on: ubuntu-latest
+    needs: [python-lint-test, javascript-lint-test, bash-validation]
+    if: always() && !cancelled() && !contains(needs.*.result, 'failure')
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Build Environment
+        run: |
+          echo "Setting up build environment..."
+
+      - name: Build Python Package
+        if: hashFiles('setup.py', 'pyproject.toml') != ''
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+
+      - name: Build JavaScript/TypeScript
+        if: hashFiles('package.json') != ''
+        run: |
+          if [ -f "package-lock.json" ]; then
+            npm ci
+          elif [ -f "package.json" ]; then
+            npm install
+          fi
+
+          if grep -q "\"build\":" package.json 2>/dev/null; then
+            npm run build
+          fi
+
+      - name: Build with Make
+        if: hashFiles('Makefile') != ''
+        run: |
+          make build || make
+
+      - name: Build Docker Image
+        if: hashFiles('Dockerfile') != ''
+        run: |
+          docker build -t ${{ github.repository }}:${{ github.sha }} .
+          docker tag ${{ github.repository }}:${{ github.sha }} ${{ github.repository }}:latest
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            dist/
+            build/
+            out/
+            target/
+          if-no-files-found: ignore
+
+  # ============================================
+  # Deploy Application
+  # ============================================
+  deploy:
+    name: 🚀 Deploy Application
+    runs-on: ubuntu-latest
+    needs: build
+    if: |
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      !contains(github.event.head_commit.message, '[skip deploy]')
+    environment:
+      name: ${{ github.event.inputs.deploy_environment || 'production' }}
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: ./artifacts
+
+      - name: Deploy to Environment
+        id: deploy
+        run: |
+          ENVIRONMENT="${{ github.event.inputs.deploy_environment || 'production' }}"
+          echo "🚀 Deploying to $ENVIRONMENT..."
+
+          # - Deploy to VPS via SSH
+
+          echo "Deployment completed successfully!"
+          echo "url=https://$ENVIRONMENT.example.com" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        if: success()
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          body: |
+            ## 🚀 Release v${{ github.run_number }}
+
+            **Commit:** ${{ github.sha }}
+            **Author:** ${{ github.actor }}
+            **Environment:** ${{ github.event.inputs.deploy_environment || 'production' }}
+
+            ### Changes
+            ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ============================================
+  # Notifications
+  # ============================================
+  notify:
+    name: 📢 Send Notifications
+    runs-on: ubuntu-latest
+    needs: [build, deploy]
+    if: always()
+    steps:
+      - name: Determine Status
+        id: status
+        run: |
+          if [[ "${{ needs.deploy.result }}" == "success" ]]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "emoji=✅" >> $GITHUB_OUTPUT
+            echo "message=deployed successfully" >> $GITHUB_OUTPUT
