@@ -2,7 +2,12 @@ name: Branch Cleanup
 
 on:
   schedule:
-    - cron: "0 0 * * 0" # Runs every Sunday at midnight
+    - cron: "0 0 * * 0" 
+  workflow_dispatch:
+  
+permissions:
+  contents: write  
+  actions: read
 
 jobs:
   cleanup:
