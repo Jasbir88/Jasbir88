@@ -1,121 +1,84 @@
-# 🚀 **Jasbir88 Repository**
+# 👋 Hey, I'm Jasbir Singh  
 
-👋 Hi, I’m **@Jasbir88**
-👀 I’m passionate about **cybersecurity** and **full-stack development**.
-🌱 Currently learning **full-stack software development**.
-💞️ Open to collaborating on **tech-related projects**.
-📫 Reach me at: **jasbir.88@gmail.com**
-⚡ Fun fact: Stack Overflow is my second home 🏠
+🌊 From the oceans to cyberspace — I started as a Deck Cadet and now I’m navigating the world of **Cybersecurity**, **AI**, and **Software Development**.  
 
 ---
 
-Git Automation Project 🚀
-
-A collection of tools, scripts, and workflows designed to streamline Git repository management and CI/CD automation.
-
-This repository demonstrates:
-
-Shell scripting for Git automation
-
-Continuous integration with GitHub Actions
-
-Security awareness (secrets, policies, .gitignore)
-
-Testing and containerization with Python + Docker
-
-Features ✨
-
-Branch Manager: Automates cleanup and maintenance of branches.
-
-Git Hooks & Scripts: Enforces commit standards and helps reduce human error.
-
-CI/CD Pipelines: GitHub Actions workflows for linting, testing, and build automation.
-
-Docker Support: Containerization for reproducible environments.
-
-Security First: Includes security policy, .gitignore, and environment-based secrets.
-
-Getting Started ⚡
-Prerequisites
-
-Git ≥ 2.30
-
-Python ≥ 3.9
-
-Docker (optional, for containerized workflows)
-
-Clone the Repo
-git clone https://github.com/Jasbir88/Jasbir88.git
-cd Jasbir88
-
-Install Dependencies
-pip install -r requirements.txt
-
-Usage 🛠️
-Branch Manager Script
-
-Run the automation tool to list, clean up, or archive branches:
-
-bash scripts/branch_manager.sh
-
-Git Automation Script
-
-Simplify repetitive Git commands:
-
-bash scripts/git_auto.sh
-
-Testing ✅
-
-Run Python unit tests:
-
-pytest tests/
-
-
-Workflows in .github/workflows will automatically lint and test on every push.
-
-Roadmap 🗺️
-
-Add coverage reports to CI
-
-Improve test cases for shell scripts
-
-Expand Dockerfile for production deployment
-
-Add more automation templates (e.g., PR checks, Slack notifications)
-
-Security 🔐
-
-Never commit credentials. Use GitHub Secrets or environment variables for tokens and sensitive data. See SECURITY.md for more.
-
-Contributing 🤝
-
-Contributions are welcome!
-
-Fork the repo
-
-Create a feature branch
-
-Submit a pull request
-
-License 📜
-
-This project is licensed under the MIT License.
----
-
-## 📧 **Contact**
-
-For any questions or suggestions, feel free to reach out:
-
-- **Email:** jasbir.88@gmail.com
-- **GitHub:** [@Jasbir88](https://github.com/Jasbir88)
+## 🚀 About Me
+- 🛡️ Aspiring Cybersecurity Specialist (currently at Beginner stage → working towards Expert).  
+- 📚 Lifelong learner with certificates in Google Cybersecurity, Google AI Essentials, and more.  
+- 🔧 Passionate about building useful tools, automation scripts, and learning systems.  
+- 🌏 Based in Johor Bahru, Malaysia | Exploring opportunities in Singapore & beyond.  
 
 ---
 
-## 🌟 **Acknowledgments**
+## 🛠️ Tech Stack
+<p align="left">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
+  <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" />
+  <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" />
+  <img src="https://img.shields.io/badge/Cybersecurity-2E3440?style=for-the-badge&logo=protonvpn&logoColor=white" />
+</p>  
 
-Special thanks to the open-source community for providing amazing tools and resources that make this project possible.
+---
 
-```
+## 📂 Project Templates
+🔹 My starter kits for coding, resumes, web projects, and more:  
 
-This version is more professional, informative, and user-friendly. Let me know if you'd like further refinements!
-```
+[![Templates Repo](https://img.shields.io/badge/Templates-View-blue?style=for-the-badge&logo=github)](https://github.com/jasbir88/templates)
+
+---
+
+## 📜 Certifications
+- ✅ Google Cybersecurity Certificate  
+- ✅ Google AI Essentials  
+- ✅ ADP Payroll Specialist
+- ✅ Machine Learning for All – University of London 
+
+---
+
+## 📊 GitHub Stats
+<p align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=jasbir88&show_icons=true&theme=tokyonight" height="160"/>
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=jasbir88&layout=compact&theme=tokyonight" height="160"/>
+</p>
+
+---
+
+## 🔥 Streak Stats
+<p align="center">
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=jasbir88&theme=tokyonight&hide_border=false" />
+</p>
+
+---
+
+## 🐍 Contribution Snake
+![snake gif](https://github.com/jasbir88/jasbir88/blob/output/github-contribution-grid-snake.svg)
+
+---
+
+## 🌱 Currently Learning
+- Cybersecurity: From fundamentals → practical labs  
+- Full Stack Development with Microsoft  
+- Applying AI to real-world productivity  
+
+---
+
+## 📫 Connect with Me
+<p align="left">
+  <a href="https://www.linkedin.com/in/jasbir88/">
+    <img src="https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin&logoColor=white" />
+  </a>
+  <a href="mailto:jasbir.88@gmail.com">
+    <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
+  </a>
+  <a href="https://github.com/jasbir88">
+    <img src="https://img.shields.io/badge/GitHub-000?style=for-the-badge&logo=github&logoColor=white" />
+  </a>
+</p>
+
+---
+
+⭐ *"Knowledge is the compass, curiosity is the wind."*  
+
