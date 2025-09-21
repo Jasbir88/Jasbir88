@@ -5,132 +5,101 @@
 🌱 Currently learning **full-stack software development**.
 💞️ Open to collaborating on **tech-related projects**.
 📫 Reach me at: **jasbir.88@gmail.com**
-⚡ Fun fact: I enjoy working solo but thrive in online collaborations!
+⚡ Fun fact: Stack Overflow is my second home 🏠
 
 ---
 
-## 🌟 **Git Automation Project**
+Git Automation Project 🚀
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Jasbir88/Jasbir88/ci-cd.yml?branch=main)
-![License](https://img.shields.io/badge/License-MIT-blue)
-[![Coverage Status](https://codecov.io/gh/Jasbir88/Jasbir88/branch/main/graph/badge.svg)](https://codecov.io/gh/Jasbir88/Jasbir88)
-[![Known Vulnerabilities](https://snyk.io/test/github/Jasbir88/Jasbir88/badge.svg)](https://snyk.io/test/github/Jasbir88/Jasbir88)
+A collection of tools, scripts, and workflows designed to streamline Git repository management and CI/CD automation.
 
-### 📚 **Overview**
+This repository demonstrates:
 
-This repository is dedicated to automating Git workflows and CI/CD pipelines for seamless and efficient development processes. It integrates **Slack notifications**, **automated branch maintenance**, and **shell script validations** to ensure high-quality code and streamlined operations.
+Shell scripting for Git automation
 
----
+Continuous integration with GitHub Actions
 
-## 📦 **Features**
+Security awareness (secrets, policies, .gitignore)
 
-- ✅ **Automated Branch Maintenance:** Keeps branches up-to-date and clean.
-- ✅ **Pre-Commit Hooks:** Enforces code consistency and quality.
-- ✅ **CI/CD Pipeline Integration:** Uses **GitHub Actions** for automated testing, building, and deployment.
-- ✅ **Shell and YAML Linting:** Ensures scripts and configuration files are error-free.
-- ✅ **Slack Notifications:** Provides real-time updates on pipeline status.
+Testing and containerization with Python + Docker
 
----
+Features ✨
 
-## ⚙️ **Setup Instructions**
+Branch Manager: Automates cleanup and maintenance of branches.
 
-### Prerequisites
+Git Hooks & Scripts: Enforces commit standards and helps reduce human error.
 
-Ensure you have the following tools installed:
+CI/CD Pipelines: GitHub Actions workflows for linting, testing, and build automation.
 
-- [Git](https://git-scm.com/) - Version control system.
-- [Docker](https://www.docker.com/) - For containerized builds and testing.
-- [Python 3.x](https://www.python.org/) - Required for Python-based scripts.
-- [YAML Linter](https://yamllint.readthedocs.io/) - For validating YAML files.
-- [ShellCheck](https://www.shellcheck.net/) - For linting shell scripts.
+Docker Support: Containerization for reproducible environments.
 
----
+Security First: Includes security policy, .gitignore, and environment-based secrets.
 
-### 🛠️ **Setup Guide**
+Getting Started ⚡
+Prerequisites
 
-1. **Clone the Repository:**
+Git ≥ 2.30
 
-   ```bash
-   git clone https://github.com/Jasbir88/Jasbir88.git
-   cd Jasbir88
-   ```
+Python ≥ 3.9
 
-2. **Install Dependencies:**
-   - For Python:
+Docker (optional, for containerized workflows)
 
-     ```bash
-     python3 -m pip install --upgrade pip
-     pip install -r requirements.txt
-     ```
+Clone the Repo
+git clone https://github.com/Jasbir88/Jasbir88.git
+cd Jasbir88
 
-   - For Node.js (if applicable):
-     ```bash
-     npm install
-     ```
+Install Dependencies
+pip install -r requirements.txt
 
-3. **Run Linting:**
-   - YAML Linting:
+Usage 🛠️
+Branch Manager Script
 
-     ```bash
-     yamllint .github/workflows/ci-cd.yml
-     ```
+Run the automation tool to list, clean up, or archive branches:
 
-   - Shell Script Linting:
-     ```bash
-     find . -type f -name "*.sh" -exec shellcheck {} \;
-     ```
+bash scripts/branch_manager.sh
 
-4. **Run Tests:**
-   - Python Tests:
+Git Automation Script
 
-     ```bash
-     pytest
-     ```
+Simplify repetitive Git commands:
 
-   - Node.js Tests:
-     ```bash
-     npm test
-     ```
+bash scripts/git_auto.sh
 
-5. **Build the Application:**
+Testing ✅
 
-   ```bash
-   npm run build
-   ```
+Run Python unit tests:
 
-6. **Deploy the Application:**
+pytest tests/
 
-   Add your deployment commands (e.g., `scp`, `rsync`, or cloud CLI commands).
 
----
+Workflows in .github/workflows will automatically lint and test on every push.
 
-## 🚀 **CI/CD Pipeline**
+Roadmap 🗺️
 
-This repository uses **GitHub Actions** for CI/CD automation. The pipeline includes the following stages:
+Add coverage reports to CI
 
-1. **Lint and Test:** Validates code and runs tests for Python and Node.js.
-2. **Build:** Builds the application using `npm` or `make`.
-3. **Deploy:** Deploys the application to the specified environment.
-4. **Notifications:** Sends Slack updates for pipeline success or failure.
+Improve test cases for shell scripts
 
----
+Expand Dockerfile for production deployment
 
-## 📜 **License**
+Add more automation templates (e.g., PR checks, Slack notifications)
 
-This project is licensed under the **MIT License**. See the LICENSE file for details.
+Security 🔐
 
----
+Never commit credentials. Use GitHub Secrets or environment variables for tokens and sensitive data. See SECURITY.md for more.
 
-## 🤝 **Contributing**
+Contributing 🤝
 
-Contributions are welcome! Please follow these steps:
+Contributions are welcome!
 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature-name`).
-3. Commit your changes (`git commit -m 'Add some feature'`).
-4. Push to the branch (`git push origin feature/your-feature-name`).
-5. Open a pull request.
+Fork the repo
 
+Create a feature branch
+
+Submit a pull request
+
+License 📜
+
+This project is licensed under the MIT License.
 ---
 
 ## 📧 **Contact**
