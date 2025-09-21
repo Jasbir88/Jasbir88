@@ -5,6 +5,12 @@ on:
     - cron: "0 0 * * *"   # Runs once a day at midnight UTC
   workflow_dispatch:       # Allows manual run from GitHub Actions tab
 
+permissions:
+  contents: read    # only needs read access to repo content
+  actions: read     # allow reading workflows
+  pull-requests: read
+  # if this workflow pushes updates (like snake animation), change to `contents: write`
+
 jobs:
   build:
     runs-on: ubuntu-latest
