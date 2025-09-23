@@ -6,7 +6,7 @@ on:
   workflow_dispatch:       # Allows manual run from GitHub Actions tab
 
 permissions:
-  contents: read    # only needs read access to repo content
+  contents: write    
   actions: read     # allow reading workflows
   pull-requests: read
   # if this workflow pushes updates (like snake animation), change to `contents: write`
