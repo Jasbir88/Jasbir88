@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '0 12 * * 1'   # runs weekly on Mondays
 
+permissions:
+  security-events: write
+  actions: read
+  contents: read
+
 jobs:
   analyze:
     name: Analyze (Python)
