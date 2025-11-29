@@ -22,6 +22,14 @@ jobs:
           echo "🔑 Setting execute permissions for required scripts..."
           chmod +x ./run_all.sh || { echo "❌ Failed to set execute permissions for run_all.sh"; exit 1; }
           echo "✅ Execute permissions set."
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install flake8
+        run: pip install flake8
 
       - name: Run All Scripts
         run: |
