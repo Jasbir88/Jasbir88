@@ -146,3 +146,4 @@ results/              # Automation results
 # --------------------------------------
 # !important_file.txt  # Example of force inclusion (uncomment when needed)
 node_modules/
+package-lock.json
