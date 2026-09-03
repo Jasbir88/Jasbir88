@@ -12,26 +12,10 @@ on:
   schedule:
     - cron: '0 23 * * 1,5'  # Every Monday and Friday at 11PM UTC
   workflow_dispatch:
-    inputs:
-      deploy_environment:
-        description: 'Environment to deploy to'
-        required: false
-        default: 'staging'
-        type: choice
-        options:
-          - staging
-          - production
 
 permissions:
-  contents: write
-  actions: read
-  pull-requests: write
-  pages: write
-  id-token: write
-
-env:
-  NODE_VERSION: '20'
-  PYTHON_VERSION: '3.11'
+  contents: read
+  pull-requests: read
 
 jobs:
   # ============================================
@@ -47,16 +31,23 @@ jobs:
       docker: ${{ steps.filter.outputs.docker }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 2
 
       - name: Detect File Changes
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v4
         id: filter
         with:
           filters: |
             python:
+              - '.github/workflows/ci-cd.yml'
+              - '.gitmodules'
+              - '.flake8'
+              - '.black'
+              - 'pytest.ini'
+              - 'setup.cfg'
+              - 'tox.ini'
               - '**/*.py'
               - 'requirements*.txt'
               - 'setup.py'
@@ -88,19 +79,20 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'schedule'
     strategy:
+      fail-fast: false
       matrix:
         python-version: ['3.10', '3.11', '3.12']
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Cache Python Dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cache/pip
@@ -133,7 +125,7 @@ jobs:
         run: |
           if [ -f ".flake8" ] || [ -f "setup.cfg" ] || [ -f "tox.ini" ]; then
             echo "🔍 Running Flake8..."
-            flake8 . || echo "::warning::Flake8 found issues"
+            flake8 .
           else
             echo "⏭️ No Flake8 configuration found, skipping..."
           fi
@@ -142,7 +134,7 @@ jobs:
         run: |
           if [ -f "pyproject.toml" ] || [ -f ".black" ]; then
             echo "🎨 Checking Black formatting..."
-            black --check . || echo "::warning::Black formatting issues found"
+            black --check .
           else
             echo "⏭️ No Black configuration found, skipping..."
           fi
@@ -151,6 +143,8 @@ jobs:
         run: |
           if [ -d "tests" ] || [ -d "test" ]; then
             echo "🧪 Running tests with pytest..."
-            pytest -v --cov=. --cov-report=xml --cov-report=html || echo "::warning::Some tests failed"
+            pytest -v --cov=. --cov-report=xml --cov-report=html
           else
-            <span class="ml-2" /><span class="inline-block w-3 h-3 rounded-full bg-neutral-a12 align-middle mb-[0.1rem]" />
+            echo "No test directory found."
+            exit 1
+          fi

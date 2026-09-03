@@ -1,0 +1,3 @@
+[submodule "secure-auth-python"]
+	path = secure-auth-python
+	url = https://github.com/Jasbir88/secure-auth-python.git
